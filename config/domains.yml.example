@@ -1,4 +1,4 @@
-# SSL证书域名配置文件
+# SSL证书域名配置文件示例
 # 支持单域名和泛域名证书配置
 #
 # 部署方式说明:
@@ -24,352 +24,79 @@
 #   renew_before_days: 过期前几天续期（默认30天）
 
 domains:
-  # *.zhengcetongban.com
-  - domain: zhengcetongban.com
+  # 示例1: 泛域名证书配置（自动部署）
+  - domain: example.com
     subdomains:
-      - domain: api.zhengcetongban.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.zhengcetongban.com # 部署目录
-        cert_filename: zhengcetongban.com.cer # 证书文件名
-        key_filename: zhengcetongban.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun # 使用阿里云DNS
-    servers:
-      - server_202_209 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "政策通办平台SSL证书" # 证书描述
-
-  # *.cczhaoche.com
-  - domain: cczhaoche.com
-    subdomains:
-      - domain: www.cczhaoche.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: cczhaoche.com # 部署目录
-        cert_filename: www.cczhaoche.com.pem # 证书文件名
-        key_filename: www.cczhaoche.com.key # 私钥文件名
-      - domain: mch.cczhaoche.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: cczhaoche.com # 部署目录
-        cert_filename: www.cczhaoche.com.pem # 证书文件名
-        key_filename: www.cczhaoche.com.key # 私钥文件名
-      - domain: fapiao.cczhaoche.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: fapiao.cczhaoche.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: cczhaoche.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun # 使用阿里云DNS
-    servers:
-      - server_193_234 # 服务器
-      - server_202_209 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "CC招车平台SSL证书" # 证书描述
-
-  # *.mall.hiyamedia.cn
-  - domain: mall.hiyamedia.cn
-    subdomains:
-      - domain: beta.mall.hiyamedia.cn
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: hiyamedia.cn # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: hiyamedia.cn.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun_hiyamedia # 使用阿里云DNS
-    servers:
-      - server_190_164 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "嗨呀小主持平台SSL证书" # 证书描述
-
-  # *.backend.hiyamedia.cn
-  - domain: backend.hiyamedia.cn
-    subdomains:
-      - domain: beta.backend.hiyamedia.cn
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: hiyamedia.cn # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: hiyamedia.cn.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun_hiyamedia # 使用阿里云DNS
-    servers:
-      - server_190_164 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "嗨呀小主持平台SSL证书" # 证书描述
-
-  # *.bshop.hiyamedia.cn
-  - domain: bshop.hiyamedia.cn
-    subdomains:
-      - domain: static.bshop.hiyamedia.cn # 上传七牛云
-        deploy_method: manual # 手动上传到七牛云
-      - domain: m.bshop.hiyamedia.cn # 手机端
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: bshop.hiyamedia.cn # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: hiyamedia.cn.key # 私钥文件名
-      - domain: bshop.hiyamedia.cn # 官网
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: bshop.hiyamedia.cn # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: hiyamedia.cn.key # 私钥文件名
+      - domain: api.example.com
+        deploy_method: auto
+        deploy_dir: example.com
+        cert_filename: example.com.cer
+        key_filename: example.com.key
+      - domain: www.example.com
+        deploy_method: auto
+        deploy_dir: example.com
+        cert_filename: example.com.cer
+        key_filename: example.com.key
     wildcard: true
-    dns_provider: aliyun_hiyamedia
+    dns_provider: aliyun
     servers:
-      - server_190_164
+      - server_prod_01
     cert_type: wildcard
     auto_renew: true
     renew_before_days: 30
-    description: "嗨呀小主持平台SSL证书"
+    description: "示例网站SSL证书"
 
-  # *.wencaiedu.net
-  - domain: wencaiedu.net
+  # 示例2: 泛域名证书配置（手动部署到CDN）
+  - domain: static.example.com
     subdomains:
-      - domain: api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: wencaiedu.net # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: wencaiedu.net.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun_wencaiedu # 使用阿里云DNS
+      - domain: cdn.static.example.com
+        deploy_method: manual  # 手动上传到七牛云/阿里云OSS等
+    wildcard: true
+    dns_provider: aliyun
+    cert_type: wildcard
+    auto_renew: true
+    renew_before_days: 30
+    description: "静态资源CDN证书"
+
+  # 示例3: 多子域名配置
+  - domain: shop.example.com
+    subdomains:
+      - domain: api.shop.example.com
+        deploy_method: auto
+        deploy_dir: shop.example.com
+        cert_filename: fullchain.cer
+        key_filename: shop.example.com.key
+      - domain: admin.shop.example.com
+        deploy_method: auto
+        deploy_dir: shop.example.com
+        cert_filename: fullchain.cer
+        key_filename: shop.example.com.key
+    wildcard: true
+    dns_provider: tencent
     servers:
-      - server_130_8_43 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "文采光大平台SSL证书" # 证书描述
+      - server_prod_01
+      - server_prod_02
+    cert_type: wildcard
+    auto_renew: true
+    renew_before_days: 30
+    description: "商城平台SSL证书"
 
-  # *.api.wencaiedu.net
-  - domain: api.wencaiedu.net
+  # 示例4: 使用不同DNS提供商
+  - domain: app.example.net
     subdomains:
-      - domain: huaxia.api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.wencaiedu.net # 部署目录
-        cert_filename: api.wencaiedu.net.pem # 证书文件名
-        key_filename: api.wencaiedu.net.key # 私钥文件名
-      - domain: huaxing.api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.wencaiedu.net # 部署目录
-        cert_filename: api.wencaiedu.net.pem # 证书文件名
-        key_filename: api.wencaiedu.net.key # 私钥文件名
-      - domain: shenya.api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.wencaiedu.net # 部署目录
-        cert_filename: api.wencaiedu.net.pem # 证书文件名
-        key_filename: api.wencaiedu.net.key # 私钥文件名
-      - domain: tanghu.api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.wencaiedu.net # 部署目录
-        cert_filename: api.wencaiedu.net.pem # 证书文件名
-        key_filename: api.wencaiedu.net.key # 私钥文件名
-      - domain: wuye.api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.wencaiedu.net # 部署目录
-        cert_filename: api.wencaiedu.net.pem # 证书文件名
-        key_filename: api.wencaiedu.net.key # 私钥文件名
-      - domain: xinyun.api.wencaiedu.net
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: api.wencaiedu.net # 部署目录
-        cert_filename: api.wencaiedu.net.pem # 证书文件名
-        key_filename: api.wencaiedu.net.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun_wencaiedu # 使用阿里云DNS
+      - domain: api.app.example.net
+        deploy_method: auto
+        deploy_dir: app.example.net
+        cert_filename: app.example.net.pem
+        key_filename: app.example.net.key
+    wildcard: true
+    dns_provider: cloudflare
     servers:
-      - server_130_8_43 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "文采光大平台SSL证书" # 证书描述
-
-  # *.higgses.com
-  - domain: higgses.com
-    subdomains:
-      - domain: c.higgses.com
-        deploy_dir: higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: higgses.com.key # 私钥文件名
-      - domain: wlhy.higgses.com
-        deploy_dir: higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: higgses.com.key # 私钥文件名
-      - domain: mall.higgses.com
-        deploy_dir: mall.higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: higgses.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_190_164 # 服务器
-      - server_190_164 # 服务器
-      - server_202_209 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "Higgses平台SSL证书" # 证书描述
-
-  # *.lanyifood-mall.higgses.com
-  - domain: lanyifood-mall.higgses.com
-    subdomains:
-      - domain: static.lanyifood-mall.higgses.com
-        deploy_method: manual # 静态资源，需要手动上传到七牛云
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "蓝逸奶站商城SSL证书" # 证书描述
-
-  # *.fastjia.com
-  - domain: fastjia.com
-    subdomains:
-      - domain: xiaoji.fastjia.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: fastjia.com # 部署目录
-        cert_filename: fastjia.com.cer # 证书文件名
-        key_filename: fastjia.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_190_164 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "速加域名平台SSL证书" # 证书描述
-
-  # *.gyl.higgses.com
-  - domain: gyl.higgses.com
-    subdomains:
-      - domain: www.gyl.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: www.gyl.higgses.com # 部署目录
-        cert_filename: gyl.higgses.com.cer # 证书文件名
-        key_filename: gyl.higgses.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_190_164 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "GYL平台SSL证书" # 证书描述
-
-  # *.ly.higgses.com
-  - domain: ly.higgses.com
-    subdomains:
-      - domain: dis-beta.ly.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: dis-beta.ly.higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: ly.higgses.com.key # 私钥文件名
-      - domain: mall-beta.ly.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: ly.higgses.com # 部署目录
-        cert_filename: ly.higgses.com.pem # 证书文件名
-        key_filename: ly.higgses.com.key # 私钥文件名
-      - domain: mall.ly.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: mall.ly.higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: ly.higgses.com.key # 私钥文件名
-      - domain: dis-dev.ly.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: dis-dev.ly.higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: ly.higgses.com.key # 私钥文件名
-      - domain: mall-dev.ly.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: mall-dev.ly.higgses.com # 部署目录
-        cert_filename: fullchain.cer # 证书文件名
-        key_filename: ly.higgses.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_190_164 # 服务器
-      - server_202_209 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "ly.higgses.com平台SSL证书"
-
-  # *.hiyashop.higgses.com
-  - domain: hiyashop.higgses.com
-    subdomains:
-      - domain: test.hiyashop.higgses.com
-        deploy_method: manual # 手动上传到七牛云
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "hiyashop平台SSL证书" # 证书描述
-
-  # *.shop.hiya.higgses.com
-  - domain: shop.hiya.higgses.com
-    subdomains:
-      - domain: shop.hiya.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: shop.hiya.higgses.com # 部署目录
-        cert_filename: hiya.higgses.com.fullchain.cer # 证书文件名
-        key_filename: hiya.higgses.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_190_164 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "嗨呀商城平台SSL证书" # 证书描述
-
-  # *.babyhost.higgses.com
-  - domain: babyhost.higgses.com
-    subdomains:
-      - domain: mp.babyhost.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: babyhost.higgses.com # 部署目录
-        cert_filename: babyhost.higgses.com.pem # 证书文件名
-        key_filename: babyhost.higgses.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_190_164 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "嗨呀商城平台SSL证书" # 证书描述
-
-  # *.haidaoapp.higgses.com
-  - domain: haidaoapp.higgses.com
-    subdomains:
-      - domain: api.haidaoapp.higgses.com
-        deploy_method: auto # 自动部署到服务器
-        deploy_dir: haidaoapp.higgses.com # 部署目录
-        cert_filename: haidaoapp.higgses.com.pem # 证书文件名
-        key_filename: haidaoapp.higgses.com.key # 私钥文件名
-    wildcard: true # 泛域名证书
-    dns_provider: tencent # 使用腾讯云DNS
-    servers:
-      - server_108_14_117 # 服务器
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "海岛游平台SSL证书" # 证书描述
-
-  # *.zhengxuyao.com
-  - domain: zhengxuyao.com
-    subdomains:
-      - domain: i.zhengxuyao.com
-        deploy_method: manual # 手动上传到七牛云
-    wildcard: true # 泛域名证书
-    dns_provider: aliyun # 使用阿里云DNS
-    cert_type: wildcard # 证书类型
-    auto_renew: true # 自动续期
-    renew_before_days: 30 # 过期前几天续期
-    description: "正需要平台SSL证书" # 证书描述
+      - server_staging_01
+    cert_type: wildcard
+    auto_renew: true
+    renew_before_days: 30
+    description: "应用平台SSL证书"
 
 # 全局配置
 global:

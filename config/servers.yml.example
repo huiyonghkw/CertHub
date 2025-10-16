@@ -1,4 +1,4 @@
-# SSL证书服务器配置文件
+# SSL证书服务器配置文件示例
 # 定义证书部署的目标服务器信息
 #
 # 配置格式说明:
@@ -15,76 +15,61 @@
 #   max_retry: 最大重试次数
 
 servers:
-  # 主要生产服务器 - 121.89.202.209
-  - server_id: server_202_209
-    host: 121.89.202.209
+  # 生产服务器示例1
+  - server_id: server_prod_01
+    host: 192.168.1.100  # 替换为实际服务器IP
     port: 22
     user: root
     ssh_key_path: ~/.ssh/id_rsa
     ssl_cert_dir: /opt/docker/nginx/ssl
-    nginx_container: higgses-nginx
-    nginx_reload_cmd: docker restart higgses-nginx
+    nginx_container: nginx-prod
+    nginx_reload_cmd: docker restart nginx-prod
     backup_dir: /opt/docker/nginx/ssl/backups
     connection_timeout: 10
     max_retry: 3
     description: "主要生产服务器"
     environment: production
 
-  # 生产服务器 - 121.89.193.234
-  - server_id: server_193_234
-    host: 121.89.193.234
+  # 生产服务器示例2（使用系统nginx）
+  - server_id: server_prod_02
+    host: 192.168.1.101  # 替换为实际服务器IP
     port: 22
     user: root
     ssh_key_path: ~/.ssh/id_rsa
-    ssl_cert_dir: /mnt/nginx/cert
-    nginx_container: nginx # 此服务器使用系统nginx
+    ssl_cert_dir: /etc/nginx/ssl
+    nginx_container: nginx  # 系统nginx
     nginx_reload_cmd: nginx -t && nginx -s reload
-    backup_dir: /mnt/nginx/cert/backups
+    backup_dir: /etc/nginx/ssl/backups
     connection_timeout: 10
     max_retry: 3
-    description: "生产服务器"
+    description: "备用生产服务器"
     environment: production
 
-  # 开发测试服务器 - 39.98.190.164
-  - server_id: server_190_164
-    host: 39.98.190.164
+  # 开发/测试服务器示例
+  - server_id: server_staging_01
+    host: 192.168.1.200  # 替换为实际服务器IP
     port: 22
-    user: root
-    ssh_key_path: ~/.ssh/id_rsa
+    user: deploy
+    ssh_key_path: ~/.ssh/id_rsa_staging
     ssl_cert_dir: /opt/docker/nginx/ssl
-    nginx_container: higgses-nginx
-    nginx_reload_cmd: docker restart higgses-nginx
+    nginx_container: nginx-staging
+    nginx_reload_cmd: docker restart nginx-staging
     backup_dir: /opt/docker/nginx/ssl/backups
     connection_timeout: 10
     max_retry: 3
     description: "开发测试服务器"
     environment: staging
 
-  # 应用服务器 - 39.108.14.117
-  - server_id: server_108_14_117
-    host: 39.108.14.117
-    port: 22
+  # 使用非标准SSH端口的服务器示例
+  - server_id: server_prod_03
+    host: 192.168.1.102  # 替换为实际服务器IP
+    port: 2222  # 非标准SSH端口
     user: root
     ssh_key_path: ~/.ssh/id_rsa
     ssl_cert_dir: /mnt/docker/nginx/ssl
-    nginx_container: higgses-nginx
-    nginx_reload_cmd: docker restart higgses-nginx
+    nginx_container: nginx-app
+    nginx_reload_cmd: docker restart nginx-app
     backup_dir: /mnt/docker/nginx/ssl/backups
-    connection_timeout: 10
-    max_retry: 3
-    description: "应用服务器"
-    environment: production
-
-    # 文采光大服务器 - 8.130.8.43
-  - server_id: server_130_8_43
-    host: 8.130.8.43
-    port: 22
-    user: root
-    ssh_key_path: ~/.ssh/id_rsa
-    ssl_cert_dir: /mnt/docker/docker/nginx/ssl
-    nginx_container: higgses-nginx
-    nginx_reload_cmd: docker restart higgses-nginx
-    backup_dir: /mnt/docker/docker/nginx/ssl/backups
     connection_timeout: 10
     max_retry: 3
     description: "应用服务器"

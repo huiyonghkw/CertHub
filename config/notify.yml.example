@@ -1,6 +1,6 @@
-# SSL证书管理系统通知配置文件
+# SSL证书管理系统通知配置文件示例
 # 支持多种通知方式：邮件、钉钉、Webhook、Slack等
-# 
+#
 # 配置格式说明:
 # - enabled: 是否启用通知功能
 # - methods: 启用的通知方式列表
@@ -14,20 +14,20 @@ global:
     - email
     - dingtalk
     - webhook
-  
+
   # 通知过滤设置
   filters:
     # 最低通知级别 (debug|info|warn|error)
     min_level: info
-    
+
     # 通知间隔（分钟）- 避免频繁通知
     interval: 30
-    
+
     # 静默时间段（24小时制）
     quiet_hours:
       start: "22:00"
       end: "08:00"
-    
+
     # 是否通知手动部署域名的证书更新
     # true: 通知所有域名的证书更新（包括手动部署的域名）
     # false: 只通知自动部署域名的证书更新
@@ -38,70 +38,70 @@ notifications:
   email:
     enabled: true
     smtp:
-      host: smtp.gmail.com
+      host: smtp.example.com  # 替换为实际SMTP服务器
       port: 587
-      user: your-email@gmail.com
-      password: your-email-password
-    from: ssl-manager@your-domain.com
+      user: ssl-manager@example.com  # 替换为实际邮箱
+      password: YOUR_EMAIL_PASSWORD  # 替换为实际密码
+    from: ssl-manager@example.com
     to:
-      - admin@your-domain.com
-      - ops@your-domain.com
+      - admin@example.com  # 替换为实际收件人
+      - ops@example.com
     subject_prefix: "[SSL证书管理]"
-    
+
     # 邮件模板
     templates:
       success: "证书操作成功通知"
       warning: "证书状态警告通知"
       error: "证书操作失败通知"
-      
+
   # 钉钉通知配置
   dingtalk:
     enabled: true
-    webhook_url: "https://oapi.dingtalk.com/robot/send"
-    access_token: "your-access-token"
-    secret: "your-secret"
-    
+    webhook_url: "https://oapi.dingtalk.com/robot/send"  # 替换为实际webhook
+    access_token: "YOUR_DINGTALK_ACCESS_TOKEN"  # 替换为实际token
+    secret: "YOUR_DINGTALK_SECRET"  # 替换为实际secret
+
     # 钉钉消息设置
     settings:
       at_all: false
       at_mobiles: []
-      
+
   # Webhook通知配置
   webhook:
     enabled: true
-    url: "https://your-api.com/webhook/ssl-cert"
+    url: "https://api.example.com/webhook/ssl-cert"  # 替换为实际webhook URL
     method: POST
     headers:
-      Authorization: "Bearer your-token"
+      Authorization: "Bearer YOUR_API_TOKEN"  # 替换为实际token
       Content-Type: "application/json"
-    
+
     # 重试设置
     retry:
       max_attempts: 3
       interval: 5
-      
+
   # Slack通知配置
   slack:
     enabled: false
-    webhook_url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+    webhook_url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"  # 替换为实际webhook
     channel: "#ssl-alerts"
     username: "SSL Certificate Manager"
-    
+
     # Slack消息设置
     settings:
       icon_emoji: ":lock:"
       link_names: true
-      
+
   # 短信通知配置
   sms:
     enabled: false
     provider: aliyun  # aliyun | tencent
-    api_key: "your-api-key"
-    api_secret: "your-api-secret"
+    api_key: "YOUR_SMS_API_KEY"  # 替换为实际API key
+    api_secret: "YOUR_SMS_API_SECRET"  # 替换为实际API secret
     phone_numbers:
-      - "13800138000"
+      - "13800138000"  # 替换为实际手机号
       - "13900139000"
-    
+
     # 短信模板
     templates:
       alert: "SSL证书告警：{domain}证书将在{days}天后过期"
@@ -123,7 +123,7 @@ rules:
       - days: 1
         level: error
         methods: ["email", "dingtalk", "webhook", "sms"]
-        
+
   # 证书更新通知
   certificate_renewal:
     enabled: true
@@ -133,21 +133,21 @@ rules:
     failure:
       level: error
       methods: ["email", "dingtalk", "webhook", "sms"]
-      
+
   # 系统健康检查通知
   health_check:
     enabled: true
     failure:
       level: error
       methods: ["email", "dingtalk", "webhook"]
-      
+
   # 定时报告通知
   daily_report:
     enabled: true
     schedule: "0 11 * * *"
     level: info
     methods: ["email", "dingtalk"]
-    
+
     # 报告内容设置
     content:
       include_healthy: true
@@ -167,7 +167,7 @@ templates:
     - hostname
     - cert_type
     - server_list
-    
+
   # 邮件模板
   email:
     certificate_expiry: |
@@ -178,38 +178,38 @@ templates:
       <p>证书类型: {{cert_type}}</p>
       <p>部署服务器: {{server_list}}</p>
       <p>请及时续期证书以避免服务中断。</p>
-      
+
     certificate_renewal_success: |
       <h2>SSL证书更新成功</h2>
       <p>域名: <strong>{{domain}}</strong></p>
       <p>更新时间: {{timestamp}}</p>
       <p>新证书过期时间: {{expiry_date}}</p>
       <p>系统已自动完成证书更新和部署。</p>
-      
+
     certificate_renewal_failure: |
       <h2>SSL证书更新失败</h2>
       <p>域名: <strong>{{domain}}</strong></p>
       <p>失败时间: {{timestamp}}</p>
       <p>错误信息: {{error_message}}</p>
       <p>请手动检查并处理证书更新问题。</p>
-      
+
   # 钉钉模板
   dingtalk:
     certificate_expiry: |
       ## SSL证书即将过期提醒
-      
+
       **域名:** {{domain}}
-      
+
       **过期时间:** {{expiry_date}}
-      
+
       **剩余天数:** {{days_remaining}}天
-      
+
       **证书类型:** {{cert_type}}
-      
+
       **部署服务器:** {{server_list}}
-      
+
       > 请及时续期证书以避免服务中断
-      
+
 # 日志配置
 logging:
   enabled: true
@@ -218,12 +218,12 @@ logging:
   rotation:
     max_size: 10MB
     max_files: 5
-    
+
   # 审计日志
   audit:
     enabled: true
     file: /data/logs/notification_audit.log
-    
+
 # 测试配置
 testing:
   enabled: true
@@ -233,4 +233,4 @@ testing:
     - method: dingtalk
       interval: daily
     - method: webhook
-      interval: hourly 
+      interval: hourly
