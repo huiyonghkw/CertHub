@@ -95,3 +95,4 @@ Thumbs.db
 # But keep example/template certificate files if any
 !examples/**/*.key
 !templates/**/*.key
+data/logs/
