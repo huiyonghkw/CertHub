@@ -1,0 +1,97 @@
+# CertHub - Certificate Management System
+# .gitignore file
+
+# Data directories - contains sensitive certificates, logs, and backups
+data/certs/
+data/logs/
+data/backups/
+data/monitoring/
+
+# Configuration files - may contain sensitive information
+config/domains.yml
+config/servers.yml
+config/dns-providers.yml
+config/notify.yml
+
+# Keep example configuration files
+!config/*.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+*.log
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.dockerignore
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS specific
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Local development
+.env
+.env.local
+*.local
+
+# Acme.sh directory (if using acme.sh)
+.acme.sh/
+
+# SSL/TLS private keys and certificates (extra safety)
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# But keep example/template certificate files if any
+!examples/**/*.key
+!templates/**/*.key

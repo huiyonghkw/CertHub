@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>手动部署域名 - SSL证书管理系统</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .header h1 {
+        margin: 0;
+        color: #333;
+        font-size: 24px;
+      }
+      .header p {
+        margin: 10px 0 0 0;
+        color: #666;
+      }
+      .domains-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 20px;
+      }
+      .domain-card {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .domain-card h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 18px;
+      }
+      .domain-info {
+        margin-bottom: 15px;
+      }
+      .domain-info span {
+        display: inline-block;
+        margin-right: 15px;
+        color: #666;
+      }
+      .status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .status.valid {
+        background-color: #e8f5e8;
+        color: #4caf50;
+      }
+      .status.expired {
+        background-color: #ffebee;
+        color: #f44336;
+      }
+      .status.unknown {
+        background-color: #f5f5f5;
+        color: #999;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+      .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+      }
+      .btn-secondary:hover {
+        background-color: #545b62;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .empty-state h2 {
+        margin-bottom: 10px;
+        color: #999;
+      }
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+      .error {
+        background-color: #ffebee;
+        color: #f44336;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .instructions {
+        background-color: #e3f2fd;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #2196f3;
+      }
+      .instructions h3 {
+        margin-top: 0;
+        color: #1976d2;
+      }
+      .instructions ol {
+        margin-bottom: 0;
+      }
+      .instructions li {
+        margin-bottom: 5px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>手动部署域名管理</h1>
+        <p>这些域名的证书需要手动上传到CDN平台（如七牛云、阿里云CDN等）</p>
+      </div>
+
+      <div class="instructions">
+        <h3>手动部署说明</h3>
+        <ol>
+          <li>点击"下载证书"按钮获取证书文件</li>
+          <li>解压缩下载的ZIP文件</li>
+          <li>登录到对应的CDN平台管理后台</li>
+          <li>找到SSL证书管理页面</li>
+          <li>上传证书文件（通常是.cer或.pem文件）和私钥文件（.key文件）</li>
+          <li>绑定证书到相应的域名</li>
+          <li>等待CDN平台的证书配置生效</li>
+        </ol>
+      </div>
+
+      <div id="loading" class="loading">正在加载手动部署域名...</div>
+      <div id="error" class="error" style="display: none"></div>
+      <div id="domains-container"></div>
+    </div>
+
+    <script>
+      // 加载手动部署域名
+      async function loadManualDomains() {
+        try {
+          const response = await fetch("/api/certificates/manual");
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          displayDomains(data.domains);
+        } catch (error) {
+          showError("加载手动部署域名失败: " + error.message);
+        } finally {
+          hideLoading();
+        }
+      }
+
+      // 显示域名列表
+      function displayDomains(domains) {
+        const container = document.getElementById("domains-container");
+
+        if (domains.length === 0) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>🎉 没有需要手动部署的域名</h2>
+                        <p>所有域名都已配置为自动部署到服务器</p>
+                    </div>
+                `;
+          return;
+        }
+
+        const html = `
+                <div class="domains-grid">
+                    ${domains
+                      .map(
+                        (domain) => `
+                        <div class="domain-card">
+                            <h3>${domain.domain}</h3>
+                            <div class="domain-info">
+                                <span><strong>父域名:</strong> ${
+                                  domain.parent_domain
+                                }</span>
+                                <span><strong>部署方式:</strong> ${
+                                  domain.deploy_method
+                                }</span>
+                            </div>
+                            <div class="domain-info">
+                                <span><strong>证书状态:</strong> <span class="status ${getStatusClass(
+                                  domain.status
+                                )}">${getStatusText(
+                          domain.status
+                        )}</span></span>
+                            </div>
+                            ${
+                              domain.expires
+                                ? `<div class="domain-info"><span><strong>过期时间:</strong> ${domain.expires}</span></div>`
+                                : ""
+                            }
+                            <div class="actions">
+                                <a href="/api/certificates/manual/${encodeURIComponent(
+                                  domain.domain
+                                )}/download" 
+                                   class="btn btn-primary" 
+                                   ${
+                                     !domain.cert_exists
+                                       ? 'style="opacity: 0.5; pointer-events: none;"'
+                                       : ""
+                                   }>
+                                    ${
+                                      domain.cert_exists
+                                        ? "下载证书"
+                                        : "证书不存在"
+                                    }
+                                </a>
+                                <button class="btn btn-secondary" onclick="openCDNGuide('${
+                                  domain.domain
+                                }')">
+                                    CDN配置指南
+                                </button>
+                            </div>
+                        </div>
+                    `
+                      )
+                      .join("")}
+                </div>
+            `;
+
+        container.innerHTML = html;
+      }
+
+      // 获取状态样式类
+      function getStatusClass(status) {
+        switch (status) {
+          case "valid":
+            return "valid";
+          case "expired":
+            return "expired";
+          default:
+            return "unknown";
+        }
+      }
+
+      // 获取状态文本
+      function getStatusText(status) {
+        switch (status) {
+          case "valid":
+            return "有效";
+          case "expired":
+            return "已过期";
+          default:
+            return "未知";
+        }
+      }
+
+      // 显示错误信息
+      function showError(message) {
+        const errorDiv = document.getElementById("error");
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+      }
+
+      // 隐藏加载提示
+      function hideLoading() {
+        document.getElementById("loading").style.display = "none";
+      }
+
+      // 打开CDN配置指南
+      function openCDNGuide(domain) {
+        const guideContent = `
+                <h3>CDN配置指南 - ${domain}</h3>
+                <h4>七牛云配置步骤：</h4>
+                <ol>
+                    <li>登录七牛云控制台</li>
+                    <li>进入"CDN" → "域名管理"</li>
+                    <li>找到域名 ${domain}</li>
+                    <li>点击"配置"进入域名配置页面</li>
+                    <li>在"HTTPS配置"中点击"修改配置"</li>
+                    <li>上传证书文件（.cer或.pem）和私钥文件（.key）</li>
+                    <li>点击"确认"完成配置</li>
+                </ol>
+                
+                <h4>阿里云CDN配置步骤：</h4>
+                <ol>
+                    <li>登录阿里云控制台</li>
+                    <li>进入"CDN"服务</li>
+                    <li>在"域名管理"中找到域名 ${domain}</li>
+                    <li>点击"配置"</li>
+                    <li>在"HTTPS配置"中点击"修改配置"</li>
+                    <li>选择"自定义上传"</li>
+                    <li>上传证书内容和私钥内容</li>
+                    <li>点击"确定"完成配置</li>
+                </ol>
+            `;
+
+        alert(guideContent.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " "));
+      }
+
+      // 页面加载时执行
+      document.addEventListener("DOMContentLoaded", function () {
+        loadManualDomains();
+      });
+    </script>
+  </body>
+</html>

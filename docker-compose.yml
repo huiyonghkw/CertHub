@@ -1,0 +1,197 @@
+# SSL证书自动管理服务
+#
+# 镜像源说明：
+# - 当前使用华为云镜像仓库加速国内拉取
+# - 如果拉取失败，可以尝试以下备用源：
+#   * 阿里云: registry.cn-hangzhou.aliyuncs.com/library/
+#   * 腾讯云: ccr.ccs.tencentyun.com/library/
+#   * 官方源: docker.io/ (国外访问)
+#
+services:
+  acme-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: acme-ssl-manager
+    hostname: acme-manager
+    restart: unless-stopped
+
+    # 环境变量
+    environment:
+      - TZ=Asia/Shanghai
+      - ACME_HOME=/opt/acme.sh
+      - CERT_HOME=/data/certs
+      - LOG_HOME=/data/logs
+      - BACKUP_HOME=/data/backups
+      - CONFIG_HOME=/config
+      - SCRIPTS_HOME=/scripts
+
+    # 数据卷挂载
+    volumes:
+      # 配置文件
+      - ./config:/config:ro
+      # 脚本文件（可写，以便设置执行权限）
+      - ./scripts:/scripts
+      # 数据存储
+      - ./data/certs:/data/certs
+      - ./data/logs:/data/logs
+      - ./data/backups:/data/backups
+      # SSH密钥（需要手动创建）
+      - ~/.ssh:/root/.ssh:ro
+      # 时区设置
+      - /etc/localtime:/etc/localtime:ro
+
+    # 网络配置
+    networks:
+      - acme-network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "/scripts/cert-manager-simple.sh", "health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+
+    # 不需要依赖web服务，acme-manager是独立的核心服务
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Web管理界面（可选）
+  acme-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: acme-web-ui
+    restart: unless-stopped
+
+    ports:
+      - "8080:80"
+
+    volumes:
+      - ./web:/web
+      - ./config:/config
+      - ./data:/data
+      - ./data/certs:/data/certs
+      - ./scripts:/scripts:ro
+
+    networks:
+      - acme-network
+
+    depends_on:
+      - acme-manager
+
+    # 启动命令
+    command: ["/web/start_server.sh"]
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  # 监控服务（可选）
+  acme-monitor:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/prom/prometheus:v3.4.1
+    container_name: acme-prometheus
+    restart: unless-stopped
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./data/monitoring:/prometheus
+
+    networks:
+      - acme-network
+
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--storage.tsdb.retention.time=200h"
+      - "--web.enable-lifecycle"
+
+    # 健康检查
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9090/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+networks:
+  acme-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  # 持久化数据卷
+  acme-certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/certs
+
+  acme-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/logs
+
+  acme-backups:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/backups
+
+  acme-monitoring:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/monitoring

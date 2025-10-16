@@ -1,0 +1,143 @@
+# SSL证书服务器配置文件
+# 定义证书部署的目标服务器信息
+#
+# 配置格式说明:
+# - server_id: 服务器标识符
+#   host: 服务器IP或域名
+#   port: SSH端口（默认22）
+#   user: SSH用户名
+#   ssh_key_path: SSH私钥路径（可选）
+#   ssl_cert_dir: SSL证书存储目录
+#   nginx_container: Nginx容器名称
+#   nginx_reload_cmd: Nginx重启命令
+#   backup_dir: 证书备份目录
+#   connection_timeout: 连接超时时间（秒）
+#   max_retry: 最大重试次数
+
+servers:
+  # 主要生产服务器 - 121.89.202.209
+  - server_id: server_202_209
+    host: 121.89.202.209
+    port: 22
+    user: root
+    ssh_key_path: ~/.ssh/id_rsa
+    ssl_cert_dir: /opt/docker/nginx/ssl
+    nginx_container: higgses-nginx
+    nginx_reload_cmd: docker restart higgses-nginx
+    backup_dir: /opt/docker/nginx/ssl/backups
+    connection_timeout: 10
+    max_retry: 3
+    description: "主要生产服务器"
+    environment: production
+
+  # 生产服务器 - 121.89.193.234
+  - server_id: server_193_234
+    host: 121.89.193.234
+    port: 22
+    user: root
+    ssh_key_path: ~/.ssh/id_rsa
+    ssl_cert_dir: /mnt/nginx/cert
+    nginx_container: nginx # 此服务器使用系统nginx
+    nginx_reload_cmd: nginx -t && nginx -s reload
+    backup_dir: /mnt/nginx/cert/backups
+    connection_timeout: 10
+    max_retry: 3
+    description: "生产服务器"
+    environment: production
+
+  # 开发测试服务器 - 39.98.190.164
+  - server_id: server_190_164
+    host: 39.98.190.164
+    port: 22
+    user: root
+    ssh_key_path: ~/.ssh/id_rsa
+    ssl_cert_dir: /opt/docker/nginx/ssl
+    nginx_container: higgses-nginx
+    nginx_reload_cmd: docker restart higgses-nginx
+    backup_dir: /opt/docker/nginx/ssl/backups
+    connection_timeout: 10
+    max_retry: 3
+    description: "开发测试服务器"
+    environment: staging
+
+  # 应用服务器 - 39.108.14.117
+  - server_id: server_108_14_117
+    host: 39.108.14.117
+    port: 22
+    user: root
+    ssh_key_path: ~/.ssh/id_rsa
+    ssl_cert_dir: /mnt/docker/nginx/ssl
+    nginx_container: higgses-nginx
+    nginx_reload_cmd: docker restart higgses-nginx
+    backup_dir: /mnt/docker/nginx/ssl/backups
+    connection_timeout: 10
+    max_retry: 3
+    description: "应用服务器"
+    environment: production
+
+    # 文采光大服务器 - 8.130.8.43
+  - server_id: server_130_8_43
+    host: 8.130.8.43
+    port: 22
+    user: root
+    ssh_key_path: ~/.ssh/id_rsa
+    ssl_cert_dir: /mnt/docker/docker/nginx/ssl
+    nginx_container: higgses-nginx
+    nginx_reload_cmd: docker restart higgses-nginx
+    backup_dir: /mnt/docker/docker/nginx/ssl/backups
+    connection_timeout: 10
+    max_retry: 3
+    description: "应用服务器"
+    environment: production
+
+# 全局服务器配置
+global:
+  # 默认SSH配置
+  ssh:
+    # SSH连接选项
+    ssh_options:
+      - "-o ConnectTimeout=10"
+      - "-o BatchMode=yes"
+      - "-o StrictHostKeyChecking=accept-new"
+      - "-o UserKnownHostsFile=/dev/null"
+
+    # SCP选项
+    scp_options:
+      - "-q"
+      - "-o ConnectTimeout=10"
+      - "-o BatchMode=yes"
+      - "-o StrictHostKeyChecking=accept-new"
+
+  # 默认证书权限设置
+  cert_permissions:
+    key_file: "600" # 私钥文件权限
+    cert_file: "644" # 证书文件权限
+    directory: "755" # 目录权限
+
+  # 部署前检查
+  pre_deploy_checks:
+    - check_ssh_connection
+    - check_target_directory
+    - check_nginx_config_syntax
+    - backup_existing_certs
+
+  # 部署后检查
+  post_deploy_checks:
+    - verify_cert_files
+    - check_nginx_status
+    - test_ssl_connection
+    - update_cert_database
+
+  # 失败处理
+  failure_handling:
+    # 部署失败时是否自动恢复备份
+    auto_restore_backup: true
+
+    # 发送失败通知
+    send_failure_notification: true
+
+    # 失败重试间隔（秒）
+    retry_interval: 60
+
+    # 最大重试次数
+    max_global_retry: 5

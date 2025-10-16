@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- 渐变定义 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="lockGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF5722;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 发光效果 -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景渐变 -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- 装饰性网格 -->
+  <g opacity="0.05">
+    <line x1="0" y1="0" x2="1200" y2="630" stroke="#fff" stroke-width="2"/>
+    <line x1="0" y1="630" x2="1200" y2="0" stroke="#fff" stroke-width="2"/>
+    <line x1="600" y1="0" x2="600" y2="630" stroke="#fff" stroke-width="2"/>
+    <line x1="0" y1="315" x2="1200" y2="315" stroke="#fff" stroke-width="2"/>
+  </g>
+
+  <!-- 左侧装饰圆 -->
+  <circle cx="150" cy="150" r="100" fill="#fff" opacity="0.05"/>
+  <circle cx="150" cy="150" r="70" fill="#fff" opacity="0.08"/>
+  <circle cx="150" cy="150" r="40" fill="#fff" opacity="0.1"/>
+
+  <!-- 右侧装饰圆 -->
+  <circle cx="1050" cy="480" r="120" fill="#fff" opacity="0.05"/>
+  <circle cx="1050" cy="480" r="80" fill="#fff" opacity="0.08"/>
+
+  <!-- 中心内容组 -->
+  <g transform="translate(600, 315)">
+    <!-- 主图标 -->
+    <g transform="translate(-450, -120)">
+      <!-- 外圈六边形 -->
+      <path d="M 0,-100 L 87,-50 L 87,50 L 0,100 L -87,50 L -87,-50 Z"
+            fill="#fff"
+            opacity="0.1"/>
+
+      <!-- 中圈六边形 -->
+      <path d="M 0,-80 L 69,-40 L 69,40 L 0,80 L -69,40 L -69,-40 Z"
+            fill="#fff"
+            opacity="0.15"/>
+
+      <!-- 证书文档 -->
+      <g transform="translate(-45, -60)">
+        <rect x="0" y="0" width="90" height="110" rx="8" fill="#fff" filter="url(#glow)"/>
+
+        <!-- 证书线条 -->
+        <line x1="18" y1="25" x2="72" y2="25" stroke="url(#mainGradient)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="18" y1="42" x2="72" y2="42" stroke="url(#mainGradient)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="18" y1="59" x2="55" y2="59" stroke="url(#mainGradient)" stroke-width="5" stroke-linecap="round"/>
+
+        <!-- 印章 -->
+        <circle cx="60" cy="85" r="18" fill="url(#lockGradient)" opacity="0.2"/>
+        <circle cx="60" cy="85" r="13" fill="none" stroke="url(#lockGradient)" stroke-width="3"/>
+        <text x="60" y="90" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="url(#lockGradient)">✓</text>
+      </g>
+
+      <!-- 锁图标 -->
+      <g transform="translate(-30, 20)">
+        <rect x="0" y="20" width="60" height="50" rx="8" fill="url(#lockGradient)" filter="url(#glow)"/>
+        <path d="M 12,20 L 12,5 Q 12,-15 30,-15 Q 48,-15 48,5 L 48,20"
+              fill="none"
+              stroke="url(#lockGradient)"
+              stroke-width="8"
+              stroke-linecap="round"/>
+        <circle cx="30" cy="40" r="7" fill="#fff"/>
+        <rect x="27" y="40" width="6" height="18" fill="#fff" rx="3"/>
+      </g>
+    </g>
+
+    <!-- 主标题 -->
+    <text x="0" y="-20"
+          text-anchor="middle"
+          font-family="'Arial Black', 'Helvetica', sans-serif"
+          font-size="120"
+          font-weight="900"
+          fill="#fff"
+          letter-spacing="5"
+          filter="url(#glow)">
+      CertHub
+    </text>
+
+    <!-- 副标题 -->
+    <text x="0" y="40"
+          text-anchor="middle"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="36"
+          font-weight="600"
+          fill="#fff"
+          opacity="0.9"
+          letter-spacing="3">
+      Enterprise SSL Certificate Automation Platform
+    </text>
+
+    <!-- 特性标签 -->
+    <g transform="translate(0, 100)">
+      <!-- ACME 标签 -->
+      <g transform="translate(-250, 0)">
+        <rect x="-60" y="-20" width="120" height="40" rx="20" fill="#fff" opacity="0.2"/>
+        <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="18" font-weight="600" fill="#fff">ACME v2</text>
+      </g>
+
+      <!-- Docker 标签 -->
+      <g transform="translate(0, 0)">
+        <rect x="-60" y="-20" width="120" height="40" rx="20" fill="#fff" opacity="0.2"/>
+        <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="18" font-weight="600" fill="#fff">Docker</text>
+      </g>
+
+      <!-- Multi-Cloud 标签 -->
+      <g transform="translate(250, 0)">
+        <rect x="-70" y="-20" width="140" height="40" rx="20" fill="#fff" opacity="0.2"/>
+        <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="18" font-weight="600" fill="#fff">Multi-Cloud</text>
+      </g>
+    </g>
+
+    <!-- 作者信息 -->
+    <g transform="translate(0, 180)">
+      <text x="0" y="0"
+            text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="24"
+            font-weight="500"
+            fill="#fff"
+            opacity="0.8"
+            letter-spacing="1">
+        by
+      </text>
+      <text x="0" y="35"
+            text-anchor="middle"
+            font-family="'Arial Black', Arial, sans-serif"
+            font-size="32"
+            font-weight="700"
+            fill="#FFD54F"
+            letter-spacing="4"
+            filter="url(#glow)">
+        HKW
+      </text>
+      <text x="0" y="65"
+            text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="20"
+            font-weight="400"
+            fill="#fff"
+            opacity="0.7"
+            letter-spacing="1">
+        会勇 (Huiyong Wang) | @huiyonghkw
+      </text>
+    </g>
+  </g>
+
+  <!-- 右下角版权信息 -->
+  <text x="1150" y="610"
+        text-anchor="end"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="16"
+        fill="#fff"
+        opacity="0.5">
+    © 2025 Huiyong Wang
+  </text>
+</svg>

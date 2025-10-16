@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200">
+  <defs>
+    <!-- 渐变定义 - 蓝色到绿色 -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 锁的渐变 -->
+    <linearGradient id="lockGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF5722;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 阴影 -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="2" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="600" height="200" fill="#ffffff" rx="10"/>
+
+  <!-- 左侧图标组 -->
+  <g transform="translate(50, 100)">
+    <!-- 外圈 - 六边形 -->
+    <path d="M 0,-45 L 39,-22.5 L 39,22.5 L 0,45 L -39,22.5 L -39,-22.5 Z"
+          fill="url(#mainGradient)"
+          opacity="0.1"/>
+
+    <!-- 中圈 - 六边形 -->
+    <path d="M 0,-38 L 33,-19 L 33,19 L 0,38 L -33,19 L -33,-19 Z"
+          fill="url(#mainGradient)"
+          opacity="0.2"/>
+
+    <!-- 内圈 - 六边形 -->
+    <path d="M 0,-30 L 26,-15 L 26,15 L 0,30 L -26,15 L -26,-15 Z"
+          fill="url(#mainGradient)"
+          opacity="0.3"/>
+
+    <!-- 证书图标 -->
+    <g transform="translate(-18, -25)">
+      <rect x="0" y="0" width="36" height="44" rx="3" fill="url(#mainGradient)" filter="url(#shadow)"/>
+      <rect x="3" y="3" width="30" height="38" rx="2" fill="#fff"/>
+
+      <!-- 证书线条 -->
+      <line x1="8" y1="10" x2="28" y2="10" stroke="url(#mainGradient)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8" y1="17" x2="28" y2="17" stroke="url(#mainGradient)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8" y1="24" x2="20" y2="24" stroke="url(#mainGradient)" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- 印章图标 -->
+      <circle cx="23" cy="32" r="6" fill="url(#lockGradient)" opacity="0.3"/>
+      <circle cx="23" cy="32" r="4" fill="none" stroke="url(#lockGradient)" stroke-width="1.5"/>
+    </g>
+
+    <!-- 锁图标覆盖层 -->
+    <g transform="translate(-12, 8)">
+      <!-- 锁身 -->
+      <rect x="5" y="8" width="14" height="12" rx="2" fill="url(#lockGradient)" filter="url(#shadow)"/>
+
+      <!-- 锁环 -->
+      <path d="M 8,8 L 8,4 Q 8,0 12,0 Q 16,0 16,4 L 16,8"
+            fill="none"
+            stroke="url(#lockGradient)"
+            stroke-width="2.5"
+            stroke-linecap="round"/>
+
+      <!-- 锁孔 -->
+      <circle cx="12" cy="13" r="2" fill="#fff"/>
+      <rect x="11" y="13" width="2" height="4" fill="#fff"/>
+    </g>
+
+    <!-- 循环箭头 - 自动化标识 -->
+    <g transform="translate(25, -25)" opacity="0.8">
+      <path d="M 0,-8 A 8,8 0 1,1 -8,0"
+            fill="none"
+            stroke="#4CAF50"
+            stroke-width="2.5"
+            stroke-linecap="round"/>
+      <polygon points="0,-8 -3,-12 3,-10" fill="#4CAF50"/>
+    </g>
+  </g>
+
+  <!-- 主标题 CertHub -->
+  <g transform="translate(130, 90)">
+    <text x="0" y="0"
+          font-family="'Arial Black', 'Helvetica', sans-serif"
+          font-size="52"
+          font-weight="900"
+          fill="url(#mainGradient)"
+          letter-spacing="2">
+      CertHub
+    </text>
+  </g>
+
+  <!-- 副标题 -->
+  <g transform="translate(130, 115)">
+    <text x="0" y="0"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="14"
+          font-weight="600"
+          fill="#666"
+          letter-spacing="1">
+      Enterprise SSL Certificate Automation
+    </text>
+  </g>
+
+  <!-- by HKW 标识 -->
+  <g transform="translate(130, 135)">
+    <text x="0" y="0"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="13"
+          font-weight="500"
+          fill="#999"
+          letter-spacing="0.5">
+      by
+    </text>
+    <text x="22" y="0"
+          font-family="'Arial Black', Arial, sans-serif"
+          font-size="13"
+          font-weight="700"
+          fill="url(#lockGradient)"
+          letter-spacing="1.5">
+      HKW
+    </text>
+    <text x="58" y="0"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="13"
+          font-weight="400"
+          fill="#bbb"
+          letter-spacing="0.5">
+      | 会勇 (Huiyong Wang)
+    </text>
+  </g>
+
+  <!-- 装饰性元素 - 右下角技术标识 -->
+  <g transform="translate(540, 170)" opacity="0.3">
+    <circle cx="0" cy="0" r="3" fill="#2196F3"/>
+    <circle cx="15" cy="0" r="3" fill="#4CAF50"/>
+    <circle cx="30" cy="0" r="3" fill="#FF9800"/>
+  </g>
+</svg>

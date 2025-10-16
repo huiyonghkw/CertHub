@@ -1,0 +1,3068 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CertHub - Enterprise SSL Certificate Automation Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #0f172a;
+        background-image:
+          radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+          radial-gradient(at 0% 100%, rgba(251, 146, 60, 0.15) 0px, transparent 50%);
+        color: #e2e8f0;
+        line-height: 1.6;
+        min-height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+          linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%);
+        backdrop-filter: blur(20px) saturate(180%);
+        color: white;
+        padding: 50px 0;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(139, 92, 246, 0.1);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
+        z-index: 1;
+        animation: headerGlow 10s ease-in-out infinite;
+      }
+
+      @keyframes headerGlow {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 0.8; }
+      }
+
+      .header-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 3.2rem;
+        margin-bottom: 16px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        background: linear-gradient(135deg, #ffffff 0%, #8b5cf6 50%, #10b981 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 80px rgba(139, 92, 246, 0.3);
+        animation: titleShine 3s ease-in-out infinite;
+      }
+
+      @keyframes titleShine {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.2); }
+      }
+
+      .header h1 i {
+        background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+      }
+
+      .header .subtitle {
+        opacity: 0.85;
+        font-size: 1.3rem;
+        font-weight: 400;
+        color: #cbd5e1;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Navigation */
+      .nav {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(139, 92, 246, 0.1),
+                    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        margin-bottom: 40px;
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(139, 92, 246, 0.5) 50%,
+          transparent 100%);
+      }
+
+      .nav .container {
+        padding: 20px;
+      }
+
+      .nav-menu {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .nav-item {
+        padding: 16px 32px;
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #cbd5e1;
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .nav-item:hover {
+        background: rgba(139, 92, 246, 0.15);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4),
+                    0 0 0 1px rgba(139, 92, 246, 0.3);
+        border-color: rgba(139, 92, 246, 0.5);
+        color: #a78bfa;
+      }
+
+      .nav-item:hover::before {
+        opacity: 1;
+      }
+
+      .nav-item.active {
+        background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5),
+                    0 4px 15px rgba(16, 185, 129, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .nav-item.active::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 14px;
+        padding: 2px;
+        background: linear-gradient(135deg, #8b5cf6, #10b981);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+      }
+
+      /* Main Content */
+      .main-content {
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(30px) saturate(180%);
+        border-radius: 24px;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(139, 92, 246, 0.1),
+                    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        padding: 48px;
+        margin-bottom: 40px;
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .main-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+          radial-gradient(circle at 30% 70%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+        pointer-events: none;
+        animation: contentGlow 15s ease-in-out infinite;
+      }
+
+      @keyframes contentGlow {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+
+      .page {
+        display: none;
+        position: relative;
+        z-index: 2;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      /* Dashboard Cards */
+      .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .card {
+        background: linear-gradient(
+          135deg,
+          rgba(30, 41, 59, 0.6) 0%,
+          rgba(15, 23, 42, 0.8) 100%
+        );
+        backdrop-filter: blur(25px) saturate(180%);
+        border-radius: 24px;
+        padding: 36px;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(139, 92, 246, 0.2),
+                    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 30px 90px rgba(139, 92, 246, 0.4),
+                    0 0 0 1px rgba(139, 92, 246, 0.4);
+        border-color: rgba(139, 92, 246, 0.5);
+      }
+
+      .card:hover::after {
+        opacity: 1;
+      }
+
+      .card h3 {
+        color: #e2e8f0;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        position: relative;
+        z-index: 2;
+      }
+
+      .card .value {
+        font-size: 3.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #8b5cf6 0%, #10b981 70%, #38bdf8 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        animation: valueGlow 3s ease-in-out infinite;
+      }
+
+      @keyframes valueGlow {
+        0%, 100% { filter: brightness(1) drop-shadow(0 0 20px rgba(139, 92, 246, 0.3)); }
+        50% { filter: brightness(1.3) drop-shadow(0 0 30px rgba(139, 92, 246, 0.6)); }
+      }
+
+      .card .label {
+        color: #a0aec0;
+        font-size: 0.95rem;
+        font-weight: 500;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* System Status */
+      .system-status {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 32, 44, 0.8) 0%,
+          rgba(45, 55, 72, 0.6) 100%
+        );
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 32px;
+        border: 1px solid rgba(72, 187, 120, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .system-status h3 {
+        color: #e2e8f0;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+
+      .status-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(72, 187, 120, 0.1);
+      }
+
+      .status-item:last-child {
+        border-bottom: none;
+      }
+
+      .status-item .name {
+        font-weight: 500;
+        color: #cbd5e1;
+      }
+
+      .status-item .value {
+        font-weight: 600;
+        color: #48bb78;
+      }
+
+      /* Certificate List */
+      .cert-list {
+        margin-top: 20px;
+      }
+
+      .cert-list-header {
+        padding: 0 0 32px 0;
+        border-bottom: 2px solid rgba(72, 187, 120, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+      }
+
+      .cert-list-header h3 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e2e8f0 0%, #48bb78 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* 表格容器 */
+      .cert-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(72, 187, 120, 0.2);
+        background: rgba(26, 32, 44, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
+      .cert-table {
+        width: 100%;
+        min-width: 800px;
+        border-collapse: collapse;
+        border-radius: 16px;
+        overflow: hidden;
+        background: transparent;
+        table-layout: fixed;
+      }
+
+      .cert-table th,
+      .cert-table td {
+        padding: 20px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(72, 187, 120, 0.1);
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+      }
+
+      .cert-table th {
+        background: linear-gradient(
+          135deg,
+          rgba(45, 55, 72, 0.9) 0%,
+          rgba(26, 32, 44, 0.9) 100%
+        );
+        font-weight: 600;
+        color: #48bb78;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      /* 设置表格列宽 */
+      .cert-table th:nth-child(1) {
+        width: 25%;
+      } /* 域名 */
+      .cert-table th:nth-child(2) {
+        width: 8%;
+      } /* 类型 */
+      .cert-table th:nth-child(3) {
+        width: 8%;
+      } /* 状态 */
+      .cert-table th:nth-child(4) {
+        width: 12%;
+      } /* 过期时间 */
+      .cert-table th:nth-child(5) {
+        width: 8%;
+      } /* 剩余天数 */
+      .cert-table th:nth-child(6) {
+        width: 6%;
+      } /* 算法 */
+      .cert-table th:nth-child(7) {
+        width: 10%;
+      } /* 自定义配置 */
+      .cert-table th:nth-child(8) {
+        width: 23%;
+      } /* 操作 */
+
+      .cert-table td:nth-child(1) {
+        width: 25%;
+      } /* 域名 */
+      .cert-table td:nth-child(2) {
+        width: 8%;
+      } /* 类型 */
+      .cert-table td:nth-child(3) {
+        width: 8%;
+      } /* 状态 */
+      .cert-table td:nth-child(4) {
+        width: 12%;
+      } /* 过期时间 */
+      .cert-table td:nth-child(5) {
+        width: 8%;
+      } /* 剩余天数 */
+      .cert-table td:nth-child(6) {
+        width: 6%;
+      } /* 算法 */
+      .cert-table td:nth-child(7) {
+        width: 10%;
+      } /* 自定义配置 */
+      .cert-table td:nth-child(8) {
+        width: 23%;
+      } /* 操作 */
+
+      .cert-table tbody tr {
+        transition: all 0.3s ease;
+      }
+
+      .cert-table tbody tr:hover {
+        background: rgba(72, 187, 120, 0.1);
+        transform: scale(1.01);
+      }
+
+      .cert-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* 操作按钮容器 */
+      .cert-table .action-buttons {
+        display: flex;
+        gap: 6px;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: nowrap;
+        width: 100%;
+      }
+
+      .cert-table .action-buttons .btn {
+        margin-right: 0;
+        padding: 8px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: auto;
+      }
+
+      .cert-table .action-buttons .btn i {
+        margin-right: 4px;
+      }
+
+      /* 响应式操作按钮 */
+      @media (max-width: 1200px) {
+        .cert-table .action-buttons .btn {
+          padding: 6px 8px;
+          font-size: 11px;
+        }
+        .cert-table .action-buttons .btn i {
+          margin-right: 2px;
+        }
+      }
+
+      /* 域名列样式 */
+      .cert-table .domain-cell {
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+
+      /* 类型列样式 */
+      .cert-table .type-cell {
+        font-size: 12px;
+        color: #cbd5e1;
+      }
+
+      /* 确保状态徽章不换行 */
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        backdrop-filter: blur(10px);
+        white-space: nowrap;
+        min-width: 50px;
+        text-align: center;
+      }
+
+      /* Status Badges */
+      .status-badge {
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        backdrop-filter: blur(10px);
+      }
+
+      .status-healthy {
+        background: rgba(72, 187, 120, 0.2);
+        color: #48bb78;
+        border: 1px solid rgba(72, 187, 120, 0.4);
+        box-shadow: 0 0 20px rgba(72, 187, 120, 0.3);
+      }
+
+      .status-warning {
+        background: rgba(237, 137, 54, 0.2);
+        color: #ed8936;
+        border: 1px solid rgba(237, 137, 54, 0.4);
+        box-shadow: 0 0 20px rgba(237, 137, 54, 0.3);
+      }
+
+      .status-error,
+      .status-expired {
+        background: rgba(245, 101, 101, 0.2);
+        color: #f56565;
+        border: 1px solid rgba(245, 101, 101, 0.4);
+        box-shadow: 0 0 20px rgba(245, 101, 101, 0.3);
+      }
+
+      .status-not_found {
+        background: rgba(160, 174, 192, 0.2);
+        color: #a0aec0;
+        border: 1px solid rgba(160, 174, 192, 0.4);
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        margin-right: 10px;
+        text-align: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+        color: white;
+        border: 1px solid rgba(139, 92, 246, 0.5);
+        box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4),
+                    0 4px 15px rgba(16, 185, 129, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .btn-primary:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #7c3aed 0%, #059669 100%);
+        box-shadow: 0 15px 50px rgba(139, 92, 246, 0.6),
+                    0 8px 25px rgba(16, 185, 129, 0.4);
+        border-color: rgba(139, 92, 246, 0.8);
+      }
+
+      .btn-secondary {
+        background: rgba(45, 55, 72, 0.8);
+        color: #cbd5e1;
+        border: 1px solid rgba(203, 213, 225, 0.2);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(45, 55, 72, 1);
+        border-color: rgba(203, 213, 225, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        color: white;
+        border: 1px solid #ed8936;
+        box-shadow: 0 8px 25px rgba(237, 137, 54, 0.3);
+      }
+
+      .btn-warning:hover {
+        background: linear-gradient(135deg, #dd6b20 0%, #c05621 100%);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        color: white;
+        border: 1px solid #f56565;
+        box-shadow: 0 8px 25px rgba(245, 101, 101, 0.3);
+      }
+
+      .btn-danger:hover {
+        background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+      }
+
+      .btn-info {
+        background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+        color: white;
+        border: 1px solid #38b2ac;
+        box-shadow: 0 8px 25px rgba(56, 178, 172, 0.3);
+      }
+
+      .btn-info:hover {
+        background: linear-gradient(135deg, #319795 0%, #2c7a7b 100%);
+      }
+
+      .btn-sm {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+
+      /* Loading */
+      .loading {
+        text-align: center;
+        padding: 50px;
+        color: #a0aec0;
+      }
+
+      .loading i {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        animation: spin 1s linear infinite;
+        color: #48bb78;
+        filter: drop-shadow(0 0 10px rgba(72, 187, 120, 0.5));
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Input Fields */
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #e2e8f0;
+        font-size: 14px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 16px 20px;
+        border: 1px solid rgba(72, 187, 120, 0.2);
+        border-radius: 12px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: rgba(26, 32, 44, 0.8);
+        color: #e2e8f0;
+        backdrop-filter: blur(10px);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #48bb78;
+        box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.2);
+        background: rgba(26, 32, 44, 0.9);
+      }
+
+      .form-control::placeholder {
+        color: #a0aec0;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+      }
+
+      .modal-content {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 32, 44, 0.95) 0%,
+          rgba(45, 55, 72, 0.9) 100%
+        );
+        backdrop-filter: blur(20px);
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(72, 187, 120, 0.2);
+        animation: modalSlideIn 0.4s ease;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          transform: translateY(-80px) scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        padding: 32px 40px;
+        border-bottom: 1px solid rgba(72, 187, 120, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(
+          135deg,
+          rgba(45, 55, 72, 0.8) 0%,
+          rgba(26, 32, 44, 0.8) 100%
+        );
+        border-radius: 20px 20px 0 0;
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e2e8f0 0%, #48bb78 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #a0aec0;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .modal-close:hover {
+        background: rgba(72, 187, 120, 0.2);
+        color: #48bb78;
+        transform: rotate(90deg);
+      }
+
+      .modal-body {
+        padding: 40px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+
+      .modal-footer {
+        padding: 32px 40px;
+        border-top: 1px solid rgba(72, 187, 120, 0.2);
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        background: rgba(26, 32, 44, 0.6);
+        border-radius: 0 0 20px 20px;
+      }
+
+      /* 自定义配置样式 */
+      .config-item {
+        margin-bottom: 28px;
+        padding: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(26, 32, 44, 0.8) 0%,
+          rgba(45, 55, 72, 0.6) 100%
+        );
+        border-radius: 16px;
+        border-left: 4px solid #48bb78;
+        border: 1px solid rgba(72, 187, 120, 0.2);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .config-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+          circle at 90% 10%,
+          rgba(72, 187, 120, 0.1) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
+
+      .config-item h4 {
+        margin: 0 0 16px 0;
+        color: #48bb78;
+        font-size: 16px;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+      }
+
+      .config-details {
+        margin-left: 15px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .config-details p {
+        margin: 10px 0;
+        font-size: 14px;
+        color: #cbd5e1;
+      }
+
+      .config-details strong {
+        color: #e2e8f0;
+        font-weight: 700;
+      }
+
+      .text-muted {
+        color: #a0aec0;
+        font-style: italic;
+      }
+
+      /* Log Viewer */
+      .log-viewer {
+        background: rgba(0, 0, 0, 0.8);
+        color: #48bb78;
+        padding: 30px;
+        border-radius: 16px;
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid rgba(72, 187, 120, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .log-viewer::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      .log-viewer::-webkit-scrollbar-track {
+        background: rgba(45, 55, 72, 0.5);
+        border-radius: 5px;
+      }
+
+      .log-viewer::-webkit-scrollbar-thumb {
+        background: rgba(72, 187, 120, 0.6);
+        border-radius: 5px;
+      }
+
+      .log-viewer::-webkit-scrollbar-thumb:hover {
+        background: rgba(72, 187, 120, 0.8);
+      }
+
+      /* Config Editor */
+      .config-editor {
+        background: rgba(0, 0, 0, 0.8);
+        color: #e2e8f0;
+        padding: 30px;
+        border-radius: 16px;
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        min-height: 300px;
+        resize: vertical;
+        border: 1px solid rgba(72, 187, 120, 0.3);
+      }
+
+      .config-editor:focus {
+        outline: none;
+        border-color: #48bb78;
+        box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.2);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 15px;
+        }
+
+        .header {
+          padding: 30px 0;
+        }
+
+        .header h1 {
+          font-size: 2.2rem;
+        }
+
+        .header .subtitle {
+          font-size: 1rem;
+        }
+
+        .nav .container {
+          padding: 15px;
+        }
+
+        .nav-menu {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .nav-item {
+          width: 100%;
+          max-width: 280px;
+          justify-content: center;
+        }
+
+        .dashboard-cards {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .main-content {
+          padding: 25px;
+        }
+
+        .cert-table {
+          font-size: 12px;
+          min-width: 800px;
+        }
+
+        .cert-table th,
+        .cert-table td {
+          padding: 12px 8px;
+          font-size: 11px;
+        }
+
+        .cert-table th {
+          font-size: 10px;
+        }
+
+        /* 移动设备上的列宽调整 */
+        .cert-table th:nth-child(1) {
+          width: 20%;
+        } /* 域名 */
+        .cert-table th:nth-child(2) {
+          width: 6%;
+        } /* 类型 */
+        .cert-table th:nth-child(3) {
+          width: 8%;
+        } /* 状态 */
+        .cert-table th:nth-child(4) {
+          width: 11%;
+        } /* 过期时间 */
+        .cert-table th:nth-child(5) {
+          width: 7%;
+        } /* 剩余天数 */
+        .cert-table th:nth-child(6) {
+          width: 5%;
+        } /* 算法 */
+        .cert-table th:nth-child(7) {
+          width: 8%;
+        } /* 自定义配置 */
+        .cert-table th:nth-child(8) {
+          width: 35%;
+        } /* 操作 */
+
+        .cert-table td:nth-child(1) {
+          width: 20%;
+        } /* 域名 */
+        .cert-table td:nth-child(2) {
+          width: 6%;
+        } /* 类型 */
+        .cert-table td:nth-child(3) {
+          width: 8%;
+        } /* 状态 */
+        .cert-table td:nth-child(4) {
+          width: 11%;
+        } /* 过期时间 */
+        .cert-table td:nth-child(5) {
+          width: 7%;
+        } /* 剩余天数 */
+        .cert-table td:nth-child(6) {
+          width: 5%;
+        } /* 算法 */
+        .cert-table td:nth-child(7) {
+          width: 8%;
+        } /* 自定义配置 */
+        .cert-table td:nth-child(8) {
+          width: 35%;
+        } /* 操作 */
+
+        .cert-table .action-buttons {
+          gap: 2px;
+        }
+
+        .cert-table .action-buttons .btn {
+          padding: 4px 6px;
+          font-size: 10px;
+        }
+
+        .cert-table .action-buttons .btn i {
+          margin-right: 2px;
+        }
+
+        .status-badge {
+          font-size: 9px;
+          padding: 4px 8px;
+        }
+
+        .btn {
+          padding: 10px 16px;
+          font-size: 13px;
+        }
+
+        .btn-sm {
+          padding: 6px 12px;
+          font-size: 11px;
+        }
+
+        .modal-content {
+          width: 95%;
+          margin: 10% auto;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+          padding: 20px;
+        }
+
+        .modal-header h3 {
+          font-size: 1.2rem;
+        }
+
+        .form-control {
+          padding: 14px 16px;
+          font-size: 14px;
+        }
+
+        .log-viewer {
+          font-size: 12px;
+          padding: 20px;
+        }
+
+        .config-editor {
+          font-size: 12px;
+          padding: 20px;
+        }
+
+        .cert-list-header {
+          flex-direction: column;
+          gap: 15px;
+          align-items: stretch;
+        }
+
+        .cert-list-header h3 {
+          text-align: center;
+        }
+
+        .alert {
+          padding: 15px 20px;
+          font-size: 13px;
+        }
+
+        .card {
+          padding: 24px;
+        }
+
+        .card h3 {
+          font-size: 1.1rem;
+        }
+
+        .card .value {
+          font-size: 2.5rem;
+        }
+
+        .system-status {
+          padding: 20px;
+        }
+
+        .status-item {
+          padding: 12px 0;
+          font-size: 14px;
+        }
+
+        /* 添加水平滚动容器 */
+        .cert-table-container {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          padding: 20px 0;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+        }
+
+        .header .subtitle {
+          font-size: 0.9rem;
+        }
+
+        .nav .container {
+          padding: 10px;
+        }
+
+        .nav-item {
+          padding: 12px 20px;
+          font-size: 13px;
+        }
+
+        .main-content {
+          padding: 20px;
+        }
+
+        .card {
+          padding: 20px;
+        }
+
+        .card .value {
+          font-size: 2rem;
+        }
+
+        .cert-table {
+          font-size: 11px;
+          min-width: 900px;
+        }
+
+        .cert-table th,
+        .cert-table td {
+          padding: 8px 4px;
+          font-size: 10px;
+        }
+
+        .cert-table th {
+          font-size: 9px;
+        }
+
+        .cert-table .action-buttons .btn {
+          padding: 3px 4px;
+          font-size: 9px;
+        }
+
+        .status-badge {
+          font-size: 8px;
+          padding: 3px 6px;
+        }
+
+        .btn {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        .btn-sm {
+          padding: 6px 10px;
+          font-size: 10px;
+        }
+
+        .modal-content {
+          width: 98%;
+          margin: 5% auto;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+          padding: 15px;
+        }
+      }
+
+      /* 修复模态框样式 */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Success and Error Messages */
+      .alert {
+        padding: 20px 24px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        border: 1px solid;
+        font-size: 14px;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+      }
+
+      .alert-success {
+        background: rgba(72, 187, 120, 0.2);
+        color: #48bb78;
+        border-color: rgba(72, 187, 120, 0.4);
+      }
+
+      .alert-error {
+        background: rgba(245, 101, 101, 0.2);
+        color: #f56565;
+        border-color: rgba(245, 101, 101, 0.4);
+      }
+
+      .alert-info {
+        background: rgba(56, 178, 172, 0.2);
+        color: #38b2ac;
+        border-color: rgba(56, 178, 172, 0.4);
+      }
+
+      .alert-warning {
+        background: rgba(237, 137, 54, 0.2);
+        color: #ed8936;
+        border-color: rgba(237, 137, 54, 0.4);
+      }
+
+      /* Additional Mailtrap-style enhancements */
+      .glow-effect {
+        filter: drop-shadow(0 0 10px rgba(72, 187, 120, 0.3));
+      }
+
+      .pulse-animation {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      /* Footer */
+      .footer {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-top: 1px solid rgba(139, 92, 246, 0.2);
+        padding: 40px 0;
+        margin-top: 60px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(139, 92, 246, 0.5) 50%,
+          transparent 100%);
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .footer-section h4 {
+        color: #e2e8f0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .footer-section p,
+      .footer-section li {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        line-height: 1.8;
+        margin-bottom: 8px;
+      }
+
+      .footer-section ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-section a {
+        color: #94a3b8;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .footer-section a:hover {
+        color: #8b5cf6;
+        transform: translateX(5px);
+      }
+
+      .footer-tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .tech-badge {
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: #a78bfa;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .tech-badge:hover {
+        background: rgba(139, 92, 246, 0.2);
+        border-color: rgba(139, 92, 246, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      }
+
+      .footer-bottom {
+        border-top: 1px solid rgba(148, 163, 184, 0.1);
+        padding-top: 30px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .footer-bottom p {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+      }
+
+      .footer-bottom .love {
+        color: #ef4444;
+        animation: heartbeat 1.5s ease-in-out infinite;
+      }
+
+      @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        25% { transform: scale(1.2); }
+        50% { transform: scale(1); }
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: rgba(139, 92, 246, 0.05);
+      }
+
+      .footer-links a:hover {
+        color: #8b5cf6;
+        background: rgba(139, 92, 246, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .social-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #a78bfa;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .social-icon:hover {
+        background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+        color: white;
+        transform: translateY(-3px) rotate(5deg);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        border-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <div class="container">
+        <div class="header-content">
+          <h1>
+            <i class="fas fa-shield-alt"></i>
+            CertHub
+          </h1>
+          <p class="subtitle">企业级 SSL/TLS 证书自动化管理解决方案</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+      <div class="container">
+        <div class="nav-menu">
+          <button class="nav-item active" onclick="showPage('dashboard')">
+            <i class="fas fa-tachometer-alt"></i>仪表盘
+          </button>
+          <button class="nav-item" onclick="showPage('certificates')">
+            <i class="fas fa-certificate"></i>证书管理
+          </button>
+          <button class="nav-item" onclick="showPage('config')">
+            <i class="fas fa-cogs"></i>系统配置
+          </button>
+          <button class="nav-item" onclick="showPage('logs')">
+            <i class="fas fa-file-alt"></i>日志查看
+          </button>
+          <button class="nav-item" onclick="showPage('monitoring')">
+            <i class="fas fa-chart-line"></i>监控面板
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container">
+      <!-- Dashboard Page -->
+      <div id="dashboard" class="page active">
+        <div class="main-content">
+          <h2
+            style="
+              color: #e2e8f0;
+              margin-bottom: 30px;
+              font-size: 1.8rem;
+              font-weight: 700;
+            "
+          >
+            <i class="fas fa-tachometer-alt glow-effect"></i> 系统仪表盘
+          </h2>
+
+          <div class="dashboard-cards">
+            <div class="card">
+              <h3><i class="fas fa-certificate"></i> 证书总数</h3>
+              <div class="value" id="total-certs">-</div>
+              <div class="label">已管理的证书数量</div>
+            </div>
+            <div class="card">
+              <h3><i class="fas fa-check-circle"></i> 健康证书</h3>
+              <div class="value" id="healthy-certs">-</div>
+              <div class="label">状态正常的证书</div>
+            </div>
+            <div class="card">
+              <h3>
+                <i class="fas fa-exclamation-triangle pulse-animation"></i>
+                即将过期
+              </h3>
+              <div class="value" id="expiring-certs">-</div>
+              <div class="label">30天内过期的证书</div>
+            </div>
+          </div>
+
+          <div class="system-status">
+            <h3><i class="fas fa-server glow-effect"></i> 系统状态</h3>
+            <div class="status-item">
+              <span class="name">系统运行正常</span>
+              <span class="value"
+                ><i class="fas fa-check-circle" style="color: #48bb78"></i>
+                正常</span
+              >
+            </div>
+            <div class="status-item">
+              <span class="name">ACME客户端状态</span>
+              <span class="value">正常</span>
+            </div>
+            <div class="status-item">
+              <span class="name">上次检查时间</span>
+              <span class="value">2025/7/14 19:31:58</span>
+            </div>
+            <div class="status-item">
+              <span class="name">下次自动检查</span>
+              <span class="value">今天 11:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certificates Page -->
+      <div id="certificates" class="page">
+        <div class="main-content">
+          <div class="cert-list">
+            <div class="cert-list-header">
+              <h3>证书列表</h3>
+              <button
+                class="btn btn-primary"
+                onclick="showModal('add-cert-modal')"
+              >
+                <i class="fas fa-plus"></i> 添加证书
+              </button>
+            </div>
+            <div id="cert-table-container">
+              <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>加载证书数据...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Config Page -->
+      <div id="config" class="page">
+        <div class="main-content">
+          <h2>系统配置</h2>
+          <div class="nav-menu" style="margin-bottom: 20px">
+            <button class="nav-item active" onclick="showConfigTab('domains')">
+              <i class="fas fa-globe"></i>域名配置
+            </button>
+            <button class="nav-item" onclick="showConfigTab('dns')">
+              <i class="fas fa-network-wired"></i>DNS配置
+            </button>
+            <button class="nav-item" onclick="showConfigTab('servers')">
+              <i class="fas fa-server"></i>服务器配置
+            </button>
+            <button class="nav-item" onclick="showConfigTab('notification')">
+              <i class="fas fa-bell"></i>通知配置
+            </button>
+          </div>
+          <div id="config-content">
+            <div class="loading">
+              <i class="fas fa-spinner"></i>
+              <p>加载配置...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Page -->
+      <div id="logs" class="page">
+        <div class="main-content">
+          <h2>日志查看</h2>
+          <div class="nav-menu" style="margin-bottom: 20px">
+            <button
+              class="nav-item active"
+              onclick="showLogTab('cert-manager')"
+            >
+              <i class="fas fa-shield-alt"></i>证书管理日志
+            </button>
+            <button class="nav-item" onclick="showLogTab('error')">
+              <i class="fas fa-exclamation-circle"></i>错误日志
+            </button>
+            <button class="nav-item" onclick="showLogTab('cron')">
+              <i class="fas fa-clock"></i>定时任务日志
+            </button>
+          </div>
+          <div class="log-viewer" id="log-content">正在加载日志...</div>
+          <div style="margin-top: 20px">
+            <button class="btn btn-primary" onclick="refreshLogs()">
+              <i class="fas fa-sync"></i> 刷新日志
+            </button>
+            <button class="btn btn-warning" onclick="clearLogs()">
+              <i class="fas fa-trash"></i> 清空日志
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monitoring Page -->
+      <div id="monitoring" class="page">
+        <div class="main-content">
+          <h2>监控面板</h2>
+          <div class="dashboard-cards">
+            <div class="card">
+              <h3><i class="fas fa-clock"></i> 系统运行时间</h3>
+              <div class="value" id="uptime">-</div>
+              <div class="label">系统持续运行时间</div>
+            </div>
+            <div class="card">
+              <h3><i class="fas fa-sync"></i> 上次检查</h3>
+              <div class="value" id="last-check">-</div>
+              <div class="label">证书状态检查时间</div>
+            </div>
+            <div class="card">
+              <h3><i class="fas fa-download"></i> 证书更新</h3>
+              <div class="value" id="cert-updates">-</div>
+              <div class="label">本月更新次数</div>
+            </div>
+          </div>
+          <div id="monitoring-charts">
+            <div class="loading">
+              <i class="fas fa-spinner"></i>
+              <p>加载监控数据...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Certificate Modal -->
+    <div id="add-cert-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">添加新证书</h3>
+          <button class="close" onclick="hideModal('add-cert-modal')">
+            &times;
+          </button>
+        </div>
+        <form id="add-cert-form">
+          <div class="form-group">
+            <label class="form-label">域名</label>
+            <input
+              type="text"
+              class="form-control"
+              id="domain"
+              placeholder="example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">证书类型</label>
+            <select class="form-control" id="cert-type">
+              <option value="single">单域名证书</option>
+              <option value="wildcard">泛域名证书</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">DNS提供商</label>
+            <select class="form-control" id="dns-provider">
+              <option value="aliyun">阿里云</option>
+              <option value="tencent">腾讯云</option>
+              <option value="huawei">华为云</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">目标服务器</label>
+            <select class="form-control" id="target-server">
+              <option value="">选择服务器</option>
+            </select>
+          </div>
+          <div style="text-align: right">
+            <button
+              type="button"
+              class="btn btn-warning"
+              onclick="hideModal('add-cert-modal')"
+            >
+              取消
+            </button>
+            <button type="submit" class="btn btn-success">生成证书</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // 全局变量
+      let currentPage = "dashboard";
+      let currentConfigTab = "domains";
+      let currentLogTab = "cert-manager";
+      let certificates = [];
+
+      // 防抖函数
+      function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(this, args), delay);
+        };
+      }
+
+      // 防抖的页面切换函数
+      const debouncedShowPage = debounce(showPage, 100);
+      let systemStatus = {};
+
+      // 页面切换
+      function showPage(pageId) {
+        // 隐藏所有页面
+        document.querySelectorAll(".page").forEach((page) => {
+          page.classList.remove("active");
+        });
+
+        // 显示选中页面
+        document.getElementById(pageId).classList.add("active");
+
+        // 更新导航状态
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        currentPage = pageId;
+
+        // 加载页面数据
+        loadPageData(pageId);
+      }
+
+      // 加载页面数据
+      function loadPageData(pageId) {
+        switch (pageId) {
+          case "dashboard":
+            loadDashboard();
+            break;
+          case "certificates":
+            loadCertificates();
+            break;
+          case "config":
+            loadConfig();
+            break;
+          case "logs":
+            loadLogs();
+            break;
+          case "monitoring":
+            loadMonitoring();
+            break;
+        }
+      }
+
+      // 加载仪表盘
+      async function loadDashboard() {
+        try {
+          const response = await fetch("/api/dashboard");
+          const data = await response.json();
+
+          document.getElementById("total-certs").textContent =
+            data.totalCerts || 0;
+          document.getElementById("healthy-certs").textContent =
+            data.healthyCerts || 0;
+          document.getElementById("expiring-certs").textContent =
+            data.expiringCerts || 0;
+
+          // 更新系统状态
+          updateSystemStatus(data.systemStatus);
+        } catch (error) {
+          console.error("加载仪表盘数据失败:", error);
+          // 使用模拟数据
+          loadMockDashboard();
+        }
+      }
+
+      // 加载模拟仪表盘数据
+      function loadMockDashboard() {
+        // 使用证书数据来更新统计信息，而不是硬编码
+        if (certificates && certificates.length > 0) {
+          updateDashboardStats();
+        } else {
+          document.getElementById("total-certs").textContent = "0";
+          document.getElementById("healthy-certs").textContent = "0";
+          document.getElementById("expiring-certs").textContent = "0";
+        }
+
+        const systemStatusHtml = `
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> 系统运行正常
+          </div>
+          <div class="cert-table">
+            <table style="width: 100%;">
+              <tr>
+                <td><strong>ACME客户端状态</strong></td>
+                <td><span class="status-badge status-healthy">正常</span></td>
+              </tr>
+              <tr>
+                <td><strong>上次检查时间</strong></td>
+                <td>${new Date().toLocaleString()}</td>
+              </tr>
+              <tr>
+                <td><strong>下次自动检查</strong></td>
+                <td>今天 11:00</td>
+              </tr>
+              <tr>
+                <td><strong>证书存储路径</strong></td>
+                <td>/data/certs/</td>
+              </tr>
+            </table>
+          </div>
+        `;
+        document.getElementById("system-status").innerHTML = systemStatusHtml;
+      }
+
+      // 加载证书列表
+      async function loadCertificates() {
+        try {
+          const response = await fetch("/api/certificates");
+          const data = await response.json();
+          certificates = data.certificates || [];
+          renderCertificateTable();
+          // 总是更新仪表盘统计，不管在哪个页面
+          updateDashboardStats();
+        } catch (error) {
+          console.error("加载证书数据失败:", error);
+          // 使用模拟数据
+          loadMockCertificates();
+        }
+      }
+
+      // 证书数据缓存
+      let certificatesCache = null;
+      let lastCertificatesUpdate = 0;
+      const CERTIFICATES_UPDATE_INTERVAL = 180000; // 3分钟更新一次证书数据
+
+      // 加载模拟证书数据（优化版本）
+      function loadMockCertificates() {
+        const now = Date.now();
+
+        // 如果缓存存在且在有效期内，直接使用缓存
+        if (
+          certificatesCache &&
+          now - lastCertificatesUpdate < CERTIFICATES_UPDATE_INTERVAL
+        ) {
+          certificates = certificatesCache;
+          renderCertificateTable();
+          updateDashboardStats();
+          return;
+        }
+
+        // 生成证书数据
+        certificates = [
+          {
+            domain: "zhengcetongban.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-10",
+            daysRemaining: 88,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: {
+              "api.zhengcetongban.com": {
+                deploy_dir: "api.zhengcetongban.com",
+                cert_filename: "zhengcetongban.com.cer",
+                key_filename: "zhengcetongban.com.key",
+              },
+            },
+          },
+          {
+            domain: "cczhaoche.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-15",
+            daysRemaining: 93,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: {
+              "www.cczhaoche.com": {
+                deploy_dir: "cczhaoche.com",
+                cert_filename: "www.cczhaoche.com.pem",
+                key_filename: "www.cczhaoche.com.key",
+              },
+              "mch.cczhaoche.com": {
+                deploy_dir: "cczhaoche.com",
+                cert_filename: "www.cczhaoche.com.pem",
+                key_filename: "www.cczhaoche.com.key",
+              },
+              "fapiao.cczhaoche.com": {
+                deploy_dir: "fapiao.cczhaoche.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "cczhaoche.com.key",
+              },
+            },
+          },
+          {
+            domain: "mall.hiyamedia.cn",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "beta.mall.hiyamedia.cn": {
+                deploy_dir: "hiyamedia.cn",
+                cert_filename: "fullchain.cer",
+                key_filename: "hiyamedia.cn.key",
+              },
+            },
+          },
+          {
+            domain: "backend.hiyamedia.cn",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "beta.backend.hiyamedia.cn": {
+                deploy_dir: "hiyamedia.cn",
+                cert_filename: "fullchain.cer",
+                key_filename: "hiyamedia.cn.key",
+              },
+            },
+          },
+          {
+            domain: "bshop.hiyamedia.cn",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "m.bshop.hiyamedia.cn": {
+                deploy_dir: "hiyamedia.cn",
+                cert_filename: "fullchain.cer",
+                key_filename: "hiyamedia.cn.key",
+              },
+              "bshop.hiyamedia.cn": {
+                deploy_dir: "bshop.hiyamedia.cn",
+                cert_filename: "fullchain.cer",
+                key_filename: "hiyamedia.cn.key",
+              },
+            },
+          },
+          {
+            domain: "wencaiedu.net",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "fullchain.cer",
+                key_filename: "wencaiedu.net.key",
+              },
+            },
+          },
+          {
+            domain: "api.wencaiedu.net",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "huaxia.api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "api.wencaiedu.net.pem",
+                key_filename: "api.wencaiedu.net.key",
+              },
+              "huaxing.api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "api.wencaiedu.net.pem",
+                key_filename: "api.wencaiedu.net.key",
+              },
+              "shenya.api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "api.wencaiedu.net.pem",
+                key_filename: "api.wencaiedu.net.key",
+              },
+              "tanghu.api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "api.wencaiedu.net.pem",
+                key_filename: "api.wencaiedu.net.key",
+              },
+              "wuye.api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "api.wencaiedu.net.pem",
+                key_filename: "api.wencaiedu.net.key",
+              },
+              "xinyun.api.wencaiedu.net": {
+                deploy_dir: "api.wencaiedu.net",
+                cert_filename: "api.wencaiedu.net.pem",
+                key_filename: "api.wencaiedu.net.key",
+              },
+            },
+          },
+          {
+            domain: "higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-11-20",
+            daysRemaining: 128,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: {
+              "wlhy.higgses.com": {
+                deploy_dir: "wlhy.higgses.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "higgses.com.key",
+              },
+              "mall.higgses.com": {
+                deploy_dir: "mall.higgses.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "higgses.com.key",
+              },
+            },
+          },
+          {
+            domain: "lanyifood-mall.higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-09-15",
+            daysRemaining: 63,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: null,
+          },
+          {
+            domain: "fastjia.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-30",
+            daysRemaining: 108,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: {
+              "xiaoji.fastjia.com": {
+                deploy_dir: "fastjia.com",
+                cert_filename: "fastjia.com.cer",
+                key_filename: "fastjia.com.key",
+              },
+            },
+          },
+          {
+            domain: "gyl.higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-10",
+            daysRemaining: 88,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: {
+              "www.gyl.higgses.com": {
+                deploy_dir: "www.gyl.higgses.com",
+                cert_filename: "gyl.higgses.com.cer",
+                key_filename: "gyl.higgses.com.key",
+              },
+            },
+          },
+          {
+            domain: "ly.higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-11-05",
+            daysRemaining: 113,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: {
+              "dis-beta.ly.higgses.com": {
+                deploy_dir: "dis-beta.ly.higgses.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "ly.higgses.com.key",
+              },
+              "mall-beta.ly.higgses.com": {
+                deploy_dir: "ly.higgses.com",
+                cert_filename: "ly.higgses.com.pem",
+                key_filename: "ly.higgses.com.key",
+              },
+              "mall.ly.higgses.com": {
+                deploy_dir: "mall.ly.higgses.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "ly.higgses.com.key",
+              },
+              "dis-dev.ly.higgses.com": {
+                deploy_dir: "dis-dev.ly.higgses.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "ly.higgses.com.key",
+              },
+              "mall-dev.ly.higgses.com": {
+                deploy_dir: "mall-dev.ly.higgses.com",
+                cert_filename: "fullchain.cer",
+                key_filename: "ly.higgses.com.key",
+              },
+            },
+          },
+          {
+            domain: "hiyashop.higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-09-15",
+            daysRemaining: 63,
+            issuer: "Let's Encrypt",
+            algorithm: "ECC",
+            custom_configs: null,
+          },
+          {
+            domain: "shop.hiya.higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "shop.hiya.higgses.com": {
+                deploy_dir: "shop.hiya.higgses.com",
+                cert_filename: "hiya.higgses.com.fullchain.cer",
+                key_filename: "hiya.higgses.com.key",
+              },
+            },
+          },
+          {
+            domain: "haidaoapp.higgses.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: {
+              "api.haidaoapp.higgses.com": {
+                deploy_dir: "haidaoapp.higgses.com",
+                cert_filename: "haidaoapp.higgses.com.pem",
+                key_filename: "haidaoapp.higgses.com.key",
+              },
+            },
+          },
+          {
+            domain: "zhengxuyao.com",
+            type: "wildcard",
+            status: "healthy",
+            expiryDate: "2025-10-16",
+            daysRemaining: 94,
+            issuer: "Let's Encrypt",
+            algorithm: "RSA",
+            custom_configs: null,
+          },
+        ];
+
+        // 缓存证书数据
+        certificatesCache = certificates;
+        lastCertificatesUpdate = now;
+
+        renderCertificateTable();
+      }
+
+      // 更新仪表盘统计数据
+      function updateDashboardStats() {
+        if (!certificates || certificates.length === 0) {
+          document.getElementById("total-certs").textContent = "0";
+          document.getElementById("healthy-certs").textContent = "0";
+          document.getElementById("expiring-certs").textContent = "0";
+          return;
+        }
+
+        const totalCerts = certificates.length;
+        const healthyCerts = certificates.filter(
+          (cert) => cert.status === "healthy"
+        ).length;
+        // 计算即将过期（30天内）和已过期的证书
+        const expiringCerts = certificates.filter(
+          (cert) =>
+            cert.status === "warning" ||
+            cert.status === "expired" ||
+            (cert.daysRemaining !== undefined &&
+              cert.daysRemaining !== null &&
+              cert.daysRemaining !== "undefined" &&
+              cert.daysRemaining <= 30)
+        ).length;
+
+        document.getElementById("total-certs").textContent = totalCerts;
+        document.getElementById("healthy-certs").textContent = healthyCerts;
+        document.getElementById("expiring-certs").textContent = expiringCerts;
+      }
+
+      // 渲染证书表格
+      function renderCertificateTable() {
+        const container = document.getElementById("cert-table-container");
+        if (certificates.length === 0) {
+          container.innerHTML =
+            '<p style="text-align: center; padding: 40px; color: #a0aec0;">暂无证书数据</p>';
+          return;
+        }
+
+        const tableHtml = `
+          <div class="cert-table-container">
+            <table class="cert-table">
+              <thead>
+                <tr>
+                  <th>域名</th>
+                  <th>类型</th>
+                  <th>状态</th>
+                  <th>过期时间</th>
+                  <th>剩余天数</th>
+                  <th>算法</th>
+                  <th>自定义配置</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${certificates
+                  .map(
+                    (cert) => `
+                  <tr>
+                    <td class="domain-cell" title="${cert.domain || "未知"}">${
+                      cert.domain || "未知"
+                    }</td>
+                    <td class="type-cell">${
+                      cert.type === "wildcard" ? "泛域名" : "单域名"
+                    }</td>
+                    <td><span class="status-badge status-${
+                      cert.status || "unknown"
+                    }">${getStatusText(cert.status)}</span></td>
+                    <td title="${cert.expiryDate || "未知"}">${
+                      cert.expiryDate || "未知"
+                    }</td>
+                    <td>${
+                      cert.daysRemaining ? cert.daysRemaining + "天" : "未知"
+                    }</td>
+                    <td>${cert.algorithm || "未知"}</td>
+                    <td>
+                      ${
+                        cert.custom_configs &&
+                        Object.keys(cert.custom_configs).length > 0
+                          ? `<button class="btn btn-sm btn-info" onclick="showCustomConfigs('${cert.domain}')" title="查看自定义配置">
+                            <i class="fas fa-cog"></i> 查看
+                          </button>`
+                          : '<span class="text-muted">无</span>'
+                      }
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-primary" onclick="renewCertificate('${
+                          cert.domain
+                        }')" title="更新证书">
+                          <i class="fas fa-sync"></i> 更新
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="downloadCertificate('${
+                          cert.domain
+                        }')" title="下载证书">
+                          <i class="fas fa-download"></i> 下载
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCertificate('${
+                          cert.domain
+                        }')" title="删除证书">
+                          <i class="fas fa-trash"></i> 删除
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+        container.innerHTML = tableHtml;
+      }
+
+      // 获取状态文本
+      function getStatusText(status) {
+        switch (status) {
+          case "healthy":
+            return "正常";
+          case "warning":
+            return "警告";
+          case "expired":
+            return "已过期";
+          default:
+            return "未知";
+        }
+      }
+
+      // 加载配置
+      async function loadConfig() {
+        showConfigTab(currentConfigTab);
+      }
+
+      // 显示配置选项卡
+      function showConfigTab(tabId) {
+        currentConfigTab = tabId;
+
+        // 更新选项卡状态
+        document.querySelectorAll("#config .nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // 加载配置内容
+        loadConfigContent(tabId);
+      }
+
+      // 加载配置内容
+      function loadConfigContent(tabId) {
+        const container = document.getElementById("config-content");
+
+        switch (tabId) {
+          case "domains":
+            container.innerHTML = `
+              <h3>域名配置</h3>
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> 配置需要管理的域名和子域名
+              </div>
+              <div class="form-group">
+                <label class="form-label">域名列表</label>
+                <textarea class="form-control" rows="10" placeholder="在此编辑域名配置...">
+domains:
+  - domain: example.com
+    subdomains:
+      - api.example.com
+      - www.example.com
+    wildcard: true
+    dns_provider: aliyun
+    auto_renew: true
+    description: "示例域名"
+                </textarea>
+              </div>
+              <button class="btn btn-success">保存配置</button>
+            `;
+            break;
+          case "dns":
+            container.innerHTML = `
+              <h3>DNS提供商配置</h3>
+              <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> 请妥善保管API密钥信息
+              </div>
+              <div class="form-group">
+                <label class="form-label">DNS配置</label>
+                <textarea class="form-control" rows="10" placeholder="在此编辑DNS配置...">
+dns_providers:
+  aliyun:
+    provider_name: "阿里云DNS"
+    env_vars:
+      Ali_Key: "your-access-key"
+      Ali_Secret: "your-secret-key"
+  tencent:
+    provider_name: "腾讯云DNS"
+    env_vars:
+      DP_Id: "your-secret-id"
+      DP_Key: "your-secret-key"
+                </textarea>
+              </div>
+              <button class="btn btn-success">保存配置</button>
+            `;
+            break;
+          case "servers":
+            container.innerHTML = `
+              <h3>服务器配置</h3>
+              <div class="alert alert-info">
+                <i class="fas fa-server"></i> 配置证书部署的目标服务器
+              </div>
+              <div class="form-group">
+                <label class="form-label">服务器列表</label>
+                <textarea class="form-control" rows="10" placeholder="在此编辑服务器配置...">
+servers:
+  - server_id: main_server
+    host: "192.168.1.100"
+    user: "root"
+    ssl_cert_dir: "/opt/nginx/ssl"
+    nginx_reload_cmd: "nginx -s reload"
+    description: "主服务器"
+                </textarea>
+              </div>
+              <button class="btn btn-success">保存配置</button>
+            `;
+            break;
+          case "notification":
+            container.innerHTML = `
+              <h3>通知配置</h3>
+              <div class="alert alert-info">
+                <i class="fas fa-bell"></i> 配置证书状态通知方式
+              </div>
+              <div class="form-group">
+                <label class="form-label">通知设置</label>
+                <textarea class="form-control" rows="10" placeholder="在此编辑通知配置...">
+notifications:
+  email:
+    enabled: true
+    smtp:
+      host: "smtp.example.com"
+      port: 587
+      user: "your-email@example.com"
+      password: "your-password"
+    to:
+      - "admin@example.com"
+  dingtalk:
+    enabled: true
+    webhook_url: "your-webhook-url"
+    secret: "your-secret"
+                </textarea>
+              </div>
+              <button class="btn btn-success">保存配置</button>
+            `;
+            break;
+        }
+      }
+
+      // 加载日志
+      async function loadLogs() {
+        showLogTab(currentLogTab);
+      }
+
+      // 显示日志选项卡
+      function showLogTab(tabId) {
+        currentLogTab = tabId;
+
+        // 更新选项卡状态
+        document.querySelectorAll("#logs .nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // 加载日志内容
+        loadLogContent(tabId);
+      }
+
+      // 加载日志内容
+      async function loadLogContent(tabId) {
+        const container = document.getElementById("log-content");
+        container.textContent = "正在加载日志...";
+
+        try {
+          const response = await fetch(`/api/logs/${tabId}`);
+          const data = await response.json();
+          container.textContent = data.content || "暂无日志数据";
+        } catch (error) {
+          console.error("加载日志失败:", error);
+          // 使用模拟日志数据
+          loadMockLogs(tabId);
+        }
+      }
+
+      // 加载模拟日志数据
+      function loadMockLogs(tabId) {
+        const container = document.getElementById("log-content");
+        const now = new Date().toISOString();
+
+        const mockLogs = {
+          "cert-manager": `[${now}] INFO: 开始检查证书状态
+[${now}] INFO: 检查域名: *.zhengcetongban.com
+[${now}] INFO: 证书状态: 正常, 剩余天数: 88
+[${now}] INFO: 检查域名: *.cczhaoche.com
+[${now}] INFO: 证书状态: 正常, 剩余天数: 93
+[${now}] INFO: 检查域名: *.mall.hiyamedia.cn
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 检查域名: *.backend.hiyamedia.cn
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 检查域名: *.bshop.hiyamedia.cn
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 检查域名: *.wencaiedu.net
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 检查域名: *.api.wencaiedu.net
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 检查域名: *.higgses.com
+[${now}] INFO: 证书状态: 正常, 剩余天数: 128
+[${now}] INFO: 检查域名: *.shop.hiya.higgses.com
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 检查域名: *.haidaoapp.higgses.com
+[${now}] INFO: 证书状态: 正常, 剩余天数: 94
+[${now}] INFO: 证书状态检查完成`,
+          error: `[${now}] ERROR: DNS查询失败: timeout
+[${now}] ERROR: 证书更新失败: invalid_dns_response
+[${now}] WARN: 证书即将过期: old.example.com (18天)`,
+          cron: `[${now}] INFO: 定时任务开始执行
+[${now}] INFO: 执行证书监控任务
+[${now}] INFO: 执行证书更新任务
+[${now}] INFO: 定时任务执行完成`,
+        };
+
+        container.textContent = mockLogs[tabId] || "暂无日志数据";
+      }
+
+      // 加载监控数据
+      async function loadMonitoring() {
+        try {
+          const response = await fetch("/api/monitoring");
+          const data = await response.json();
+
+          document.getElementById("uptime").textContent =
+            data.uptime || "2天3小时";
+          document.getElementById("last-check").textContent =
+            data.lastCheck || "5分钟前";
+          document.getElementById("cert-updates").textContent =
+            data.certUpdates || "15";
+
+          // 加载监控图表
+          loadMonitoringCharts(data.charts);
+        } catch (error) {
+          console.error("加载监控数据失败:", error);
+          // 使用模拟数据
+          loadMockMonitoring();
+        }
+      }
+
+      // 监控数据缓存
+      let monitoringDataCache = null;
+      let lastMonitoringUpdate = 0;
+      const MONITORING_UPDATE_INTERVAL = 60000; // 60秒更新一次监控数据
+
+      // 加载模拟监控数据（优化版本）
+      function loadMockMonitoring() {
+        const now = Date.now();
+
+        // 如果缓存存在且在有效期内，直接返回
+        if (
+          monitoringDataCache &&
+          now - lastMonitoringUpdate < MONITORING_UPDATE_INTERVAL
+        ) {
+          updateMonitoringDisplay(monitoringDataCache);
+          return;
+        }
+
+        // 更新简单的文本数据
+        const textData = {
+          uptime: "2天3小时",
+          lastCheck: "5分钟前",
+          certUpdates: "15",
+        };
+
+        // 生成静态的监控图表HTML（仅在首次加载时）
+        const chartsContainer = document.getElementById("monitoring-charts");
+        if (!chartsContainer.hasChildNodes() || !monitoringDataCache) {
+          const chartsHtml = `
+            <div class="alert alert-info">
+              <i class="fas fa-chart-bar"></i> 监控图表功能正在开发中
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px;">
+              <div class="card">
+                <h3><i class="fas fa-chart-pie"></i> 证书状态分布</h3>
+                <div style="margin-top: 20px;">
+                  <div class="status-item">
+                    <span class="name">正常证书</span>
+                    <span class="value" id="cert-normal">15个 (94%)</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="name">警告证书</span>
+                    <span class="value" id="cert-warning">1个 (6%)</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="name">过期证书</span>
+                    <span class="value" id="cert-expired">0个 (0%)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <h3><i class="fas fa-server"></i> 系统资源使用</h3>
+                <div style="margin-top: 20px;">
+                  <div class="status-item">
+                    <span class="name">CPU使用率</span>
+                    <span class="value" id="cpu-usage">15%</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="name">内存使用</span>
+                    <span class="value" id="memory-usage">128MB</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="name">磁盘使用</span>
+                    <span class="value" id="disk-usage">2.5GB</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          chartsContainer.innerHTML = chartsHtml;
+        }
+
+        // 缓存数据
+        monitoringDataCache = {
+          ...textData,
+          charts: {
+            certNormal: "15个 (94%)",
+            certWarning: "1个 (6%)",
+            certExpired: "0个 (0%)",
+            cpuUsage: "15%",
+            memoryUsage: "128MB",
+            diskUsage: "2.5GB",
+          },
+        };
+
+        lastMonitoringUpdate = now;
+        updateMonitoringDisplay(monitoringDataCache);
+      }
+
+      // 更新监控数据显示（仅更新数据，不重新生成DOM）
+      function updateMonitoringDisplay(data) {
+        // 更新基础数据
+        const uptimeEl = document.getElementById("uptime");
+        const lastCheckEl = document.getElementById("last-check");
+        const certUpdatesEl = document.getElementById("cert-updates");
+
+        if (uptimeEl) uptimeEl.textContent = data.uptime;
+        if (lastCheckEl) lastCheckEl.textContent = data.lastCheck;
+        if (certUpdatesEl) certUpdatesEl.textContent = data.certUpdates;
+
+        // 更新图表数据（如果存在）
+        if (data.charts) {
+          const chartElements = {
+            "cert-normal": data.charts.certNormal,
+            "cert-warning": data.charts.certWarning,
+            "cert-expired": data.charts.certExpired,
+            "cpu-usage": data.charts.cpuUsage,
+            "memory-usage": data.charts.memoryUsage,
+            "disk-usage": data.charts.diskUsage,
+          };
+
+          Object.entries(chartElements).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) {
+              element.textContent = value;
+            }
+          });
+        }
+      }
+
+      // 刷新日志
+      function refreshLogs() {
+        loadLogContent(currentLogTab);
+      }
+
+      // 清空日志
+      function clearLogs() {
+        if (confirm("确定要清空日志吗？此操作不可恢复。")) {
+          fetch(`/api/logs/${currentLogTab}`, {
+            method: "DELETE",
+          })
+            .then(() => {
+              loadLogContent(currentLogTab);
+            })
+            .catch((error) => {
+              console.error("清空日志失败:", error);
+              alert("清空日志失败");
+            });
+        }
+      }
+
+      // 更新证书
+      async function renewCertificate(domain) {
+        if (confirm(`确定要更新证书 ${domain} 吗？`)) {
+          try {
+            const response = await fetch(`/api/certificates/${domain}/renew`, {
+              method: "POST",
+            });
+            const result = await response.json();
+
+            if (result.success) {
+              alert("证书更新成功");
+              loadCertificates();
+            } else {
+              alert("证书更新失败: " + result.message);
+            }
+          } catch (error) {
+            console.error("更新证书失败:", error);
+            alert("更新证书失败");
+          }
+        }
+      }
+
+      // 下载证书
+      async function downloadCertificate(domain) {
+        try {
+          const response = await fetch(`/api/certificates/${domain}/download`);
+          const blob = await response.blob();
+
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${domain}.zip`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error("下载证书失败:", error);
+          alert("下载证书失败");
+        }
+      }
+
+      // 删除证书
+      async function deleteCertificate(domain) {
+        if (confirm(`确定要删除证书 ${domain} 吗？此操作不可恢复。`)) {
+          try {
+            const response = await fetch(`/api/certificates/${domain}`, {
+              method: "DELETE",
+            });
+            const result = await response.json();
+
+            if (result.success) {
+              alert("证书删除成功");
+              loadCertificates();
+            } else {
+              alert("证书删除失败: " + result.message);
+            }
+          } catch (error) {
+            console.error("删除证书失败:", error);
+            alert("删除证书失败");
+          }
+        }
+      }
+
+      // 显示模态框
+      function showModal(modalId) {
+        document.getElementById(modalId).classList.add("active");
+      }
+
+      // 隐藏模态框
+      function hideModal(modalId) {
+        document.getElementById(modalId).classList.remove("active");
+      }
+
+      // 添加证书表单提交
+      document
+        .getElementById("add-cert-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = {
+            domain: document.getElementById("domain").value,
+            certType: document.getElementById("cert-type").value,
+            dnsProvider: document.getElementById("dns-provider").value,
+            targetServer: document.getElementById("target-server").value,
+          };
+
+          try {
+            const response = await fetch("/api/certificates", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              alert("证书生成成功");
+              hideModal("add-cert-modal");
+              loadCertificates();
+            } else {
+              alert("证书生成失败: " + result.message);
+            }
+          } catch (error) {
+            console.error("生成证书失败:", error);
+            alert("生成证书失败");
+          }
+        });
+
+      // 显示自定义配置模态框
+      function showCustomConfigs(domain) {
+        const cert = certificates.find((c) => c.domain === domain);
+        if (!cert || !cert.custom_configs) {
+          alert("没有找到自定义配置信息");
+          return;
+        }
+
+        const customConfigs = cert.custom_configs;
+        const configHtml = Object.keys(customConfigs)
+          .map((subdomain) => {
+            const config = customConfigs[subdomain];
+            return `
+            <div class="config-item">
+              <h4>${subdomain}</h4>
+              <div class="config-details">
+                <p><strong>部署目录:</strong> ${
+                  config.deploy_dir || "使用默认"
+                }</p>
+                <p><strong>证书文件名:</strong> ${
+                  config.cert_filename || "使用默认"
+                }</p>
+                <p><strong>私钥文件名:</strong> ${
+                  config.key_filename || "使用默认"
+                }</p>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+
+        const modalHtml = `
+          <div class="modal" id="custom-config-modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3>${domain} 自定义配置</h3>
+                <button class="modal-close" onclick="hideModal('custom-config-modal')">×</button>
+              </div>
+              <div class="modal-body">
+                ${configHtml}
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('custom-config-modal')">关闭</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // 移除现有的模态框
+        const existingModal = document.getElementById("custom-config-modal");
+        if (existingModal) {
+          existingModal.remove();
+        }
+
+        // 添加新的模态框
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
+        showModal("custom-config-modal");
+      }
+
+      // 页面加载时初始化
+      document.addEventListener("DOMContentLoaded", function () {
+        loadDashboard();
+        loadCertificates(); // 加载证书数据以更新统计数据
+
+        // 减少刷新频率：每5分钟刷新一次仪表盘数据
+        setInterval(loadDashboard, 300000); // 5分钟 = 300000毫秒
+
+        // 如果在监控页面，单独刷新监控数据（频率更低）
+        setInterval(() => {
+          if (currentPage === "monitoring") {
+            loadMockMonitoring();
+          }
+        }, 120000); // 2分钟 = 120000毫秒
+      });
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <!-- 关于项目 -->
+          <div class="footer-section">
+            <h4><i class="fas fa-shield-alt"></i> CertHub</h4>
+            <p>企业级 SSL/TLS 证书自动化管理解决方案</p>
+            <p>基于 acme.sh 的现代化证书管理平台，支持 Let's Encrypt、ZeroSSL 等多家证书颁发机构。</p>
+            <div class="social-icons">
+              <a href="https://github.com" class="social-icon" title="GitHub" target="_blank">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="social-icon" title="文档">
+                <i class="fas fa-book"></i>
+              </a>
+              <a href="#" class="social-icon" title="支持">
+                <i class="fas fa-question-circle"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- 核心功能 -->
+          <div class="footer-section">
+            <h4><i class="fas fa-star"></i> 核心功能</h4>
+            <ul>
+              <li><i class="fas fa-check"></i> 自动申请与续期证书</li>
+              <li><i class="fas fa-check"></i> 支持泛域名证书</li>
+              <li><i class="fas fa-check"></i> 多 DNS 服务商集成</li>
+              <li><i class="fas fa-check"></i> 证书状态实时监控</li>
+              <li><i class="fas fa-check"></i> 到期提醒通知</li>
+              <li><i class="fas fa-check"></i> 批量证书管理</li>
+            </ul>
+          </div>
+
+          <!-- 技术栈 -->
+          <div class="footer-section">
+            <h4><i class="fas fa-code"></i> 技术栈</h4>
+            <div class="footer-tech-stack">
+              <span class="tech-badge">Docker</span>
+              <span class="tech-badge">acme.sh</span>
+              <span class="tech-badge">Python</span>
+              <span class="tech-badge">Flask</span>
+              <span class="tech-badge">Bash</span>
+              <span class="tech-badge">HTML5</span>
+              <span class="tech-badge">JavaScript</span>
+              <span class="tech-badge">Let's Encrypt</span>
+            </div>
+          </div>
+
+          <!-- 快速链接 -->
+          <div class="footer-section">
+            <h4><i class="fas fa-link"></i> 快速链接</h4>
+            <ul>
+              <li><a href="#"><i class="fas fa-arrow-right"></i> 使用文档</a></li>
+              <li><a href="#"><i class="fas fa-arrow-right"></i> API 接口</a></li>
+              <li><a href="#"><i class="fas fa-arrow-right"></i> 常见问题</a></li>
+              <li><a href="#"><i class="fas fa-arrow-right"></i> 更新日志</a></li>
+              <li><a href="#"><i class="fas fa-arrow-right"></i> 参与贡献</a></li>
+              <li><a href="#"><i class="fas fa-arrow-right"></i> 问题反馈</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>
+            Made with <span class="love">❤</span> by CertHub Team
+          </p>
+          <p>
+            © 2025 CertHub. All rights reserved. | 基于 MIT 开源协议
+          </p>
+          <div class="footer-links">
+            <a href="#">隐私政策</a>
+            <a href="#">服务条款</a>
+            <a href="#">开源许可</a>
+            <a href="#">联系我们</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
