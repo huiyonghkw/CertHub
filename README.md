@@ -1,5 +1,7 @@
 # CertHub - Enterprise SSL Certificate Automation Platform
 
+<div align="center">
+
 ![CertHub Logo](docs/images/certhub-logo.svg)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -11,6 +13,8 @@
 **企业级 SSL/TLS 证书自动化管理解决方案**
 
 基于 Docker 容器化、ACME 协议和多云 DNS API 的证书全生命周期管理系统
+
+</div>
 
 ## 📋 概述
 
