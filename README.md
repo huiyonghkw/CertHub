@@ -1083,7 +1083,7 @@ domains:
 
 #### 实际使用示例
 
-**CC 招车域名配置：**
+**域名配置：**
 
 ```yaml
 domains:
@@ -2252,7 +2252,7 @@ domains:
     cert_type: wildcard
     auto_renew: true
     renew_before_days: 30
-    description: "CC招车平台SSL证书"
+    description: "平台SSL证书"
 ```
 
 **部署到多服务器**：
