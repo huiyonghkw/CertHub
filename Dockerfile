@@ -3,8 +3,8 @@
 FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/alpine:3.18
 
 # 维护者信息
-LABEL maintainer="SSL Certificate Manager <admin@example.com>"
-LABEL version="1.0.0"
+LABEL maintainer="会勇禾口王 <https://github.com/huiyonghkw/CertHub>"
+LABEL version="1.3.0"
 LABEL description="Automated SSL Certificate Management Service with ACME.sh"
 
 # 设置环境变量
@@ -56,9 +56,6 @@ RUN pip3 install --no-cache-dir pyyaml requests cryptography && \
     pip3 install --no-cache-dir click colorama tabulate || \
     apk add --no-cache py3-click
 
-# 安装Web API服务器依赖
-RUN pip3 install --no-cache-dir flask flask-cors
-
 # 创建系统用户
 RUN addgroup -g 1000 acme && \
     adduser -D -s /bin/bash -G acme -u 1000 acme && \
@@ -101,10 +98,12 @@ RUN if [ -f "/root/.acme.sh/acme.sh" ]; then \
 # 复制脚本文件
 COPY scripts/ ${SCRIPTS_HOME}/
 COPY config/ ${CONFIG_HOME}/
+COPY VERSION /VERSION
 
 # 设置脚本权限
 RUN chmod +x ${SCRIPTS_HOME}/*.sh && \
-    chmod +x ${SCRIPTS_HOME}/utils/*.sh
+    chmod +x ${SCRIPTS_HOME}/utils/*.sh && \
+    chmod +x ${SCRIPTS_HOME}/lib/*.sh 2>/dev/null || true
 
 # 配置SSH客户端
 RUN echo "Host *" >> /etc/ssh/ssh_config && \
@@ -169,9 +168,6 @@ RUN chmod +x /entrypoint.sh
 # 设置目录权限
 RUN chown -R acme:acme ${CERT_HOME} ${LOG_HOME} ${BACKUP_HOME} && \
     chown -R root:root ${CONFIG_HOME} ${SCRIPTS_HOME}
-
-# 暴露端口（如果需要健康检查接口）
-EXPOSE 8080
 
 # 健康检查 (简化版本)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \

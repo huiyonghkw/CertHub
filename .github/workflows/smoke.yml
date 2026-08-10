@@ -1,0 +1,32 @@
+name: smoke
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run smoke tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Check shell scripts
+        run: |
+          bash -n scripts/lib/pack-manual-zip.sh
+          bash -n scripts/cert-manager.sh
+      - name: Secret scan (tracked text)
+        run: |
+          # 粗扫：常见密钥形态（排除 example / docs 占位）
+          if git grep -nE '(Aliyun_Secret|SecretId|AKIA[0-9A-Z]{16}|BEGIN (RSA |OPENSSH )?PRIVATE KEY)' -- \
+              ':!*.example' ':!docs/**' ':!SECURITY.md' ':!.env.example' ':!**/*.md' \
+              | grep -v 'YOUR_\|example\|changeme\|placeholder\|<.*>'; then
+            echo 'Possible secrets in tracked files' >&2
+            exit 1
+          fi
+          echo 'secret scan: no high-confidence hits'

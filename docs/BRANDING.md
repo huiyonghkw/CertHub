@@ -93,7 +93,7 @@ by HKW | 会勇 (Huiyong Wang)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](https://www.docker.com/)
 [![ACME](https://img.shields.io/badge/ACME-Let's%20Encrypt-orange.svg)](https://letsencrypt.org/)
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](CHANGELOG.md)
 [![Author](https://img.shields.io/badge/author-HKW-orange.svg)](https://github.com/huiyonghkw)
 ```
 
@@ -116,7 +116,7 @@ huiyonghkw/CertHub
 ### Docker 镜像
 ```
 huiyonghkw/certhub:latest
-huiyonghkw/certhub:1.2.0
+huiyonghkw/certhub:1.3.0
 huiyonghkw/certhub:stable
 ```
 
@@ -218,8 +218,8 @@ Key Features:
 ✅ Multi-server deployment
 ✅ Support for wildcard certificates
 ✅ Integration with Alibaba Cloud, Tencent Cloud, Huawei Cloud
-✅ Web-based management interface
-✅ RESTful API
+✅ CLI + YAML certificate workflow
+✅ Read-only health endpoint
 
 Perfect for DevOps teams managing hundreds of certificates!
 
@@ -281,7 +281,8 @@ CertHub - Enterprise SSL Certificate Automation Platform 是一个功能完整�
 • 自动续期即将过期的证书
 • 状态监控和告警通知
 • 安全备份和恢复功能
-• Web 管理界面和 RESTful API
+• CLI + YAML 证书工作流
+• 只读健康检查接口
 
 技术特点：
 • 基于 ACME v2 协议和 Let's Encrypt

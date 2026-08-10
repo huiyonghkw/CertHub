@@ -4,6 +4,17 @@
 # Data directories - contains sensitive certificates, logs, and backups
 data/certs/
 data/logs/
+
+# Commercial/private deliverables must never enter the Community repository
+pro/
+commercial/
+private-release/
+licenses/
+license.json
+license.key
+docs/site/images/pay-alipay.png
+docs/site/images/pay-wechat.png
+docs/site/images/wechat-qr.png
 data/backups/
 data/monitoring/
 
@@ -28,7 +39,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# Python packaging dirs only — do NOT ignore scripts/lib (CertHub helpers)
+/lib/
 lib64/
 parts/
 sdist/

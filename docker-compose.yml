@@ -36,10 +36,12 @@ services:
       - ./data/certs:/data/certs
       - ./data/logs:/data/logs
       - ./data/backups:/data/backups
-      # SSH密钥（需要手动创建）
+      - ./data/packs:/data/packs
+      # SSH密钥（需要手动创建；生产请只挂部署用密钥，勿整目录 ~/.ssh）
       - ~/.ssh:/root/.ssh:ro
       # 时区设置
       - /etc/localtime:/etc/localtime:ro
+      - ./VERSION:/VERSION:ro
 
     # 网络配置
     networks:
@@ -72,36 +74,28 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # Web管理界面（可选）
-  acme-web:
+  # Community 只提供只读健康检查；Web 控制台与完整 REST 属于 Pro
+  acme-health:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: acme-web-ui
+    container_name: acme-health
     restart: unless-stopped
 
     ports:
-      - "8080:80"
+      - "8080:8080"
 
     volumes:
-      - ./web:/web
-      - ./config:/config
-      - ./data:/data
-      - ./data/certs:/data/certs
-      - ./scripts:/scripts:ro
+      - ./web:/web:ro
 
     networks:
       - acme-network
 
-    depends_on:
-      - acme-manager
-
-    # 启动命令
     command: ["/web/start_server.sh"]
 
     # 健康检查
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3

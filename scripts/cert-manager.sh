@@ -3,7 +3,7 @@
 # SSL证书管理主脚本
 # 功能：生成、部署、更新、监控SSL证书
 # 作者：SSL Certificate Manager
-# 版本：1.0.0
+# 版本：1.3.0（见仓库根 VERSION）
 
 set -euo pipefail
 
@@ -18,6 +18,8 @@ BACKUP_DIR="/data/backups"
 source "${SCRIPT_DIR}/utils/logger.sh"
 source "${SCRIPT_DIR}/utils/notify.sh"
 source "${SCRIPT_DIR}/utils/backup.sh"
+# Community 手动 ZIP 打包（SSH 部署本体仍在本文件 deploy_certificate）
+source "${SCRIPT_DIR}/lib/pack-manual-zip.sh"
 
 # 全局变量
 DOMAINS_CONFIG="${CONFIG_DIR}/domains.yml"
@@ -35,7 +37,7 @@ NC='\033[0m' # No Color
 # 显示使用说明
 show_usage() {
     cat << EOF
-SSL证书管理工具 v1.0.0
+SSL证书管理工具 v1.3.0
 
 使用方法: $SCRIPT_NAME [命令] [选项]
 
@@ -55,6 +57,7 @@ SSL证书管理工具 v1.0.0
     list-manual                 列出所有需要手动部署的域名
     test <domain>               测试指定域名的SSL证书
     verify-chains               验证所有域名的证书链完整性
+    pack-manual                 为 deploy_method=manual 的域名打 ZIP/tar 包
     health-check                健康检查
     cleanup                     清理过期的证书和日志
     init                        初始化证书管理系统
@@ -385,6 +388,7 @@ generate_certificate() {
 
 # 部署证书
 deploy_certificate() {
+    # SSH/SCP + 远端 nginx reload。云厂商控制台「平台自动上传」不在此路径；manual 走 pack-manual-zip。
     local domain="$1"
     local server_id="$2"
     local custom_dir="$3"
@@ -1271,6 +1275,11 @@ main() {
                     renew_certificate "$domain"
                 fi
             done <<< "$domains"
+            # 续期后为 manual 目标打 ZIP，供控制台手传
+            pack_manual_zips || log_warn "手动 ZIP 打包未完全成功"
+            ;;
+        "pack-manual")
+            pack_manual_zips
             ;;
         "monitor")
             monitor_certificates
