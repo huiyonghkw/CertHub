@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configure · CertHub</title>
+<meta name="description" content="DNS, domains, servers, and notifications YAML.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html" aria-current="page"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Configure</span><span class="zh">配置说明</span></div>
+<h1><span class="en">Configure</span><span class="zh">配置说明</span></h1>
+<p class="lead"><span class="en">DNS, domains, servers, and notifications YAML.</span><span class="zh">DNS、域名、服务器、通知四份 YAML 怎么写。</span></p>
+
+<div class="h2sub">dns-providers.yml · domains.yml · servers.yml · notify.yml</div>
+<p><span class="en">Four files under <code>config/</code>. Fill DNS keys first, then domains, then servers. Notify can wait.</span><span class="zh"><code>config/</code> 下四份文件。建议顺序：先 DNS 密钥，再域名，再服务器。通知可以后配。</span></p>
+
+<h2><span class="en">DNS providers</span><span class="zh">DNS 提供商</span></h2>
+<p><span class="en">Create <code>config/dns-providers.yml</code> (not committed). Map provider IDs to acme.sh env vars.</span><span class="zh">自行创建 <code>config/dns-providers.yml</code>（不要提交）。把提供商 ID 映射成 acme.sh 需要的环境变量。</span></p>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>dns-providers.yml</span></div>
+<pre class="sc"><span class="cm"># Aliyun</span>
+dns_providers:
+  aliyun:
+    provider_name: "阿里云DNS"
+    acme_dns_type: dns_ali
+    env_vars:
+      Ali_Key: "你的 AccessKey"
+      Ali_Secret: "你的 Secret"
+
+  tencent:
+    provider_name: "腾讯云DNS"
+    acme_dns_type: dns_dp
+    env_vars:
+      DP_Id: "你的 Id"
+      DP_Key: "你的 Key"
+
+  huawei:
+    provider_name: "华为云DNS"
+    acme_dns_type: dns_huaweicloud
+    env_vars:
+      HUAWEICLOUD_Username: "..."
+      HUAWEICLOUD_Password: "..."</pre></div>
+<div class="ask"><span class="lb"><span class="en">permission</span><span class="zh">权限</span></span>
+<span class="en">API keys only need DNS record write on the zones you manage — not full cloud admin.</span>
+<span class="zh">API 密钥只需对应域名的 DNS 解析写权限，不必开成全账号管理员。</span>
+</div>
+
+<h2><span class="en">Domains</span><span class="zh">域名</span></h2>
+<p><span class="en">Copy from <code>domains.yml.example</code>. Prefer wildcard when you have many subdomains. Mark console-upload-only hosts as <code>manual</code>.</span><span class="zh">从 <code>domains.yml.example</code> 复制。子域名多时优先泛域名。只能控制台上传的标成 <code>manual</code>。</span></p>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>domains.yml</span></div>
+<pre class="sc">domains:
+  - domain: example.com
+    wildcard: true
+    dns_provider: aliyun
+    cert_type: wildcard
+    auto_renew: true
+    renew_before_days: 30
+    servers:
+      - server_prod_01
+    subdomains:
+      - domain: api.example.com
+        deploy_method: auto
+        deploy_dir: example.com
+        cert_filename: fullchain.cer
+        key_filename: example.com.key
+      - domain: cdn.static.example.com
+        deploy_method: manual   <span class="cm"># CDN upload by hand</span></pre></div>
+<ul>
+<li><span class="en"><code>deploy_dir</code> / filenames must match your nginx ssl paths.</span><span class="zh"><code>deploy_dir</code> 和文件名必须和 nginx 的 ssl 路径一致。</span></li>
+<li><span class="en"><code>dns_provider</code> must equal an ID in <code>dns-providers.yml</code>.</span><span class="zh"><code>dns_provider</code> 必须等于 <code>dns-providers.yml</code> 里的 ID。</span></li>
+<li><span class="en"><code>servers</code> lists IDs from <code>servers.yml</code>.</span><span class="zh"><code>servers</code> 填 <code>servers.yml</code> 里的服务器 ID。</span></li>
+</ul>
+
+<h2><span class="en">Servers</span><span class="zh">服务器</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>servers.yml</span></div>
+<pre class="sc">servers:
+  - server_id: server_prod_01
+    host: 192.168.1.100
+    port: 22
+    user: root
+    ssh_key_path: ~/.ssh/id_rsa
+    ssl_cert_dir: /opt/docker/nginx/ssl
+    nginx_reload_cmd: docker restart nginx
+    backup_dir: /opt/docker/nginx/ssl/backups</pre></div>
+<ul>
+<li><span class="en">Docker nginx: reload often restarts the container; point <code>ssl_cert_dir</code> at the <b>host mount</b>, not a path that only exists inside a throwaway container FS.</span><span class="zh">Docker 版 nginx：reload 常用重启容器；<code>ssl_cert_dir</code> 请指向<strong>宿主机挂载目录</strong>，不要写只存在于临时容器文件系统里的路径。</span></li>
+<li><span class="en">System nginx example: <code>nginx -t &amp;&amp; nginx -s reload</code>.</span><span class="zh">系统 nginx 示例：<code>nginx -t &amp;&amp; nginx -s reload</code>。</span></li>
+</ul>
+
+<h2><span class="en">Notifications</span><span class="zh">通知</span></h2>
+<p><span class="en">Optional. Enable methods in <code>notify.yml</code>: email, dingtalk, webhook, slack. Quiet hours and min level are under <code>global.filters</code>.</span><span class="zh">可选。在 <code>notify.yml</code> 打开 email / dingtalk / webhook / slack。<code>global.filters</code> 里可设最低级别和静默时段。</span></p>
+
+<h2><span class="en">Validate YAML</span><span class="zh">校验 YAML</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>validate</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager python3 -c \
+  "import yaml; yaml.safe_load(open('/config/domains.yml')); print('ok')"</pre></div>
+
+<div class="pager"><a href="install.html">← <span class="en">Install</span><span class="zh">安装部署</span></a><a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

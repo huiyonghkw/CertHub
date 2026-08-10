@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web & API · CertHub Pro</title>
+<meta name="description" content="CertHub Pro dashboard on :8080 and full REST endpoints. Community keeps the public /health liveness endpoint.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html" aria-current="page"><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></div>
+<h1><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></h1>
+<p class="lead"><span class="en">The official dashboard and full REST operations surface are included with every CertHub Pro tier.</span><span class="zh">官方 Web 控制台与完整 REST 操作面包含在所有 CertHub Pro 档位中。</span></p>
+
+<div class="h2sub">http://localhost:8080 · REST</div>
+<div class="ask"><span class="lb"><span class="en">edition boundary</span><span class="zh">版本边界</span></span><span class="en">Future Community distributions keep CLI + YAML and the public <code>/health</code> endpoint, without the official dashboard or full REST API. Historical MIT releases that already contain Web keep their granted rights.</span><span class="zh">未来 Community 发行版保留 CLI、YAML 与公开的 <code>/health</code>，不包含官方控制台和完整 REST API。历史 MIT 版本中已经发布的 Web 代码仍保留既有授权。</span></div>
+<h2><span class="en">Open the dashboard</span><span class="zh">打开控制台</span></h2>
+<p><span class="en">After installing the Pro Web package, visit <a href="http://localhost:8080">http://localhost:8080</a>. Pages: dashboard, certificates, configuration and logs. Manual CDN helper: <code>/manual-domains.html</code>.</span><span class="zh">安装 Pro Web 包后打开 <a href="http://localhost:8080">http://localhost:8080</a>。页面包含仪表盘、证书、配置和日志；CDN 手动辅助页为 <code>/manual-domains.html</code>。</span></p>
+<div class="ask"><span class="lb"><span class="en">auth</span><span class="zh">鉴权</span></span>
+<span class="en">Set <code>CERTHUB_API_TOKEN</code> in <code>.env</code> (see <code>.env.example</code> / <a href="https://github.com/huiyonghkw/CertHub/blob/main/SECURITY.md">SECURITY.md</a>). The :8080 reverse proxy injects the token for the dashboard. External API callers need <code>X-CertHub-Token</code> or <code>Authorization: Bearer</code>. <code>/health</code> stays public. Do not expose :8080 to the public Internet.</span>
+<span class="zh">在 <code>.env</code> 设 <code>CERTHUB_API_TOKEN</code>（见 <code>.env.example</code> / <a href="https://github.com/huiyonghkw/CertHub/blob/main/SECURITY.md">SECURITY.md</a>）。8080 反代会给控制台注入 token；外部调 API 需带 <code>X-CertHub-Token</code> 或 <code>Authorization: Bearer</code>。<code>/health</code> 仍公开。不要把 :8080 直接暴露到公网。</span>
+</div>
+
+<h2><span class="en">REST endpoints</span><span class="zh">REST 接口</span></h2>
+<div class="tablewrap"><table>
+<thead><tr><th>Method</th><th>Path</th><th><span class="en">Notes</span><span class="zh">说明</span></th></tr></thead>
+<tbody>
+<tr><td>GET</td><td><code>/api/dashboard</code></td><td><span class="en">Counts and health summary</span><span class="zh">数量与健康摘要</span></td></tr>
+<tr><td>GET</td><td><code>/api/certificates</code></td><td><span class="en">List certs</span><span class="zh">证书列表</span></td></tr>
+<tr><td>POST</td><td><code>/api/certificates</code></td><td><span class="en">Create / issue</span><span class="zh">创建 / 申请</span></td></tr>
+<tr><td>POST</td><td><code>/api/certificates/{domain}/renew</code></td><td><span class="en">Renew</span><span class="zh">续期</span></td></tr>
+<tr><td>DELETE</td><td><code>/api/certificates/{domain}</code></td><td><span class="en">Delete</span><span class="zh">删除</span></td></tr>
+<tr><td>GET</td><td><code>/api/certificates/{domain}/download</code></td><td><span class="en">Download zip</span><span class="zh">下载压缩包</span></td></tr>
+<tr><td>GET</td><td><code>/api/certificates/manual</code></td><td><span class="en">Manual domain list</span><span class="zh">手动域名列表</span></td></tr>
+<tr><td>GET</td><td><code>/api/certificates/manual/{domain}/download</code></td><td><span class="en">Manual pack zip</span><span class="zh">手动包 ZIP</span></td></tr>
+<tr><td>GET/POST</td><td><code>/api/config/{type}</code></td><td><span class="en">domains / dns / servers / notification</span><span class="zh">域名 / DNS / 服务器 / 通知</span></td></tr>
+<tr><td>GET</td><td><code>/api/logs/{type}</code></td><td><span class="en">cert / error / cron logs</span><span class="zh">证书 / 错误 / 定时日志</span></td></tr>
+<tr><td>GET</td><td><code>/api/monitoring</code></td><td><span class="en">Monitoring snapshot</span><span class="zh">监控快照</span></td></tr>
+<tr><td>GET</td><td><code>/health</code></td><td><span class="en">Liveness</span><span class="zh">存活检查</span></td></tr>
+</tbody></table></div>
+
+<div class="pager"><a href="cdn.html">← <span class="en">Deploy</span><span class="zh">证书部署</span></a><a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

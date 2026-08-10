@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<!--
+  CertHub landing · 企业级 SSL 自动化平台
+  Hero → 价值 → Look → Deploy → Trust → 定价 → FAQ → CTA
+  Visual DNA: OneLook V1科技白. 字体自托管.
+-->
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertHub — 把证书从签发管到真正上线</title>
+<meta name="description" content="CertHub 是 MIT 开源、自托管的 SSL 证书交付中枢：ACME 签发与续期、SSH 多机部署、手动目标 ZIP 打包、完整证书链校验、监控告警，一本台账跑完整闭环。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CertHub — 把证书从签发管到真正上线">
+<meta property="og:description" content="能 SSH 的自动部署，只能控制台上传的自动打包；上线前再验完整证书链。MIT 开源，自托管。">
+<meta property="og:image" content="images/certhub-logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css?v=20260810-10">
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="index.html"><img src="images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="index.html" aria-current="page"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="guide/index.html"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<main>
+
+<!-- ============ 1. HERO · FiloMail: big claim + one CTA + product visual ============ -->
+<section class="hero-center noseq">
+  <div class="wrap wrap-wide">
+    <div class="eyebrow center"><span></span>MIT Open Source · Self-hosted</div>
+    <h1>
+      <span class="en"><span class="hero-line">Issuing is only half.</span><br><span class="hero-line">Ship certificates <span class="hl">all the way live.</span></span></span>
+      <span class="zh"><span class="hero-line">证书签下来，</span><br><span class="hero-line">只完成了<span class="hl">一半</span></span></span>
+    </h1>
+    <p class="hero-sub">
+      <span class="en">CertHub keeps issue, renew, deploy and verification on one self-hosted ledger. SSH targets ship automatically; console-only targets get a ready-to-upload ZIP.</span>
+      <span class="zh">CertHub 把申请、续期、部署、验收放进一本自托管台账：能 SSH 的自动推，只能控制台上传的自动打包。</span>
+    </p>
+    <div class="btns center">
+      <a class="btn btn-primary" href="https://github.com/huiyonghkw/CertHub">
+        <span class="en">Use free on GitHub →</span><span class="zh">在 GitHub 免费使用 →</span>
+      </a>
+      <a class="btn" href="guide/install.html">
+        <span class="en">Install guide</span><span class="zh">查看安装手册</span>
+      </a>
+    </div>
+    <p class="hero-note"><span class="en">Your private keys stay on your machines · Docker Compose</span><span class="zh">私钥留在自己的机器 · Docker Compose 部署</span></p>
+
+    <div class="hero-stage hero-console pre">
+      <span class="hero-pro-badge">PRO 控制台</span>
+      <img src="images/console-dashboard.webp?v=20260810-3" width="2296" height="1834" decoding="async" fetchpriority="high" alt="CertHub Pro Web 控制台：证书状态总览、优先处理队列与系统健康检查">
+    </div>
+</section>
+
+<section class="proof-strip noseq" aria-label="Product facts">
+  <div class="wrap wrap-wide proof-grid">
+    <div><b>5 free</b><span><span class="en">Community certificate slots</span><span class="zh">Community 证书槽位</span></span></div>
+    <div><b>3 DNS</b><span><span class="en">Aliyun · Tencent · Huawei</span><span class="zh">阿里 · 腾讯 · 华为</span></span></div>
+    <div><b>2 paths</b><span><span class="en">SSH auto · manual ZIP</span><span class="zh">SSH 自动 · 手动 ZIP</span></span></div>
+    <div><b>fullchain</b><span><span class="en">verify before failure</span><span class="zh">上线前检查完整链</span></span></div>
+  </div>
+</section>
+
+<!-- ============ 2. VALUE · 结果导向三块（不讲零件清单）============ -->
+<section id="pain" class="core-value noseq">
+  <div class="wrap wrap-wide">
+    <p class="section-kicker"><span class="en">Why CertHub</span><span class="zh">为什么是 CertHub</span></p>
+    <h2 class="cv-title">
+      <span class="en">One inventory.<br>From issue to <span class="hl">live HTTPS</span>.</span>
+      <span class="zh">一本台账。<br>从申请管到<span class="hl">HTTPS 上线</span>。</span>
+    </h2>
+    <p class="section-lead cv-lead">
+      <span class="en">Stop babysitting ~90-day calendars across dozens of domains. CertHub runs the full loop on your machines — and matches how deploy actually works in the wild.</span>
+      <span class="zh">别再给人肉盯「约 90 天一轮」的日历。CertHub 在你自己的机器上跑完整链路，并且对齐真实世界的部署方式。</span>
+    </p>
+
+    <div class="cv-outcomes pre">
+      <article class="cvo">
+        <span class="cvo-k"><span class="en">Outcome 01</span><span class="zh">结果 01</span></span>
+        <h3><span class="en">Stop watching calendars</span><span class="zh">不用再人肉盯日历</span></h3>
+        <p><span class="en">Issue, renew and alert on a schedule. Every certificate keeps its status and next action in one place.</span><span class="zh">申请、续期、告警按日程跑；每张证书的状态和下一步动作集中在一起。</span></p>
+      </article>
+      <article class="cvo cvo-focus">
+        <span class="cvo-k"><span class="en">Outcome 02</span><span class="zh">结果 02</span></span>
+        <h3><span class="en">Live where it must</span><span class="zh">该亮绿的地方真亮绿</span></h3>
+        <p><span class="en">Auto-push over SSH/SCP + nginx reload. ZIP when only a CDN console accepts humans. Full-chain check before WeChat fails you.</span><span class="zh">能 SSH 的自动推（SCP + nginx reload）；只能控制台上传就打 ZIP。完整证书链先验，别等微信小程序报错。</span></p>
+      </article>
+      <article class="cvo">
+        <span class="cvo-k"><span class="en">Outcome 03</span><span class="zh">结果 03</span></span>
+        <h3><span class="en">Keys stay yours</span><span class="zh">私钥不出你的环境</span></h3>
+        <p><span class="en">Private Docker stack. Multi-cloud DNS under one config. Pro adds the official Web console and REST automation — still self-hosted.</span><span class="zh">私有化 Docker，三云 DNS 一份配置；Pro 增加官方 Web 控制台和 REST 自动化，同时保持自托管。</span></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. LOOK · 产品怎么用 ============ -->
+<section id="look" class="look noseq">
+  <div class="wrap wrap-wide">
+    <h2>
+      <span class="en">A Closer Look</span>
+      <span class="zh">产品怎么用</span>
+    </h2>
+    <p class="section-lead">
+      <span class="en">Four moments that matter in production — not a feature dump.</span>
+      <span class="zh">先看四个天天会用到的动作，不堆功能名。</span>
+    </p>
+
+    <div class="look-tabs" role="tablist" aria-label="Product tour">
+      <button class="look-tab active" id="tab-chain" data-tab="chain" role="tab" aria-selected="true" aria-controls="panel-chain" tabindex="0">
+        <span class="en">Verify chain</span><span class="zh">校验证书链</span>
+      </button>
+      <button class="look-tab" id="tab-deploy" data-tab="deploy" role="tab" aria-selected="false" aria-controls="panel-deploy" tabindex="-1">
+        <span class="en">Deploy</span><span class="zh">部署</span>
+      </button>
+      <button class="look-tab" id="tab-renew" data-tab="renew" role="tab" aria-selected="false" aria-controls="panel-renew" tabindex="-1">
+        <span class="en">Renew &amp; alert</span><span class="zh">续期告警</span>
+      </button>
+      <button class="look-tab" id="tab-control" data-tab="control" role="tab" aria-selected="false" aria-controls="panel-control" tabindex="-1">
+        <span class="en">Pro console</span><span class="zh">Pro 控制台</span>
+      </button>
+    </div>
+
+    <div class="look-panels pre">
+      <div class="look-panel active" id="panel-chain" data-panel="chain" role="tabpanel" aria-labelledby="tab-chain">
+        <div class="look-copy">
+          <h3><span class="en">Catch incomplete chains before WeChat does</span><span class="zh">别等微信报错，先查出证书链缺中间证</span></h3>
+          <p><span class="en">Prefer <code>fullchain.cer</code>, count certificates in the file, and probe the live host. Deploying only the server cert (missing intermediates) shows up as an explicit failure.</span><span class="zh">优先用 <code>fullchain.cer</code>，检查文件里有几段证书，再探测线上主机。如果只部署了站点证书、缺中间证书，这里会直接报出来。</span></p>
+        </div>
+        <div class="term">
+          <div class="bar"><i></i><i></i><i></i><span>verify-chains</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">./cert-manager.sh</span> verify-chains
+<span class="ok">✓</span> api.example.com · 2 certs · fullchain.cer
+<span class="ok">✓</span> mini.example.com · WeChat-ready
+<span class="cm"># incomplete chains are reported, not ignored</span></pre>
+        </div>
+      </div>
+
+      <div class="look-panel" id="panel-deploy" data-panel="deploy" role="tabpanel" aria-labelledby="tab-deploy" hidden>
+        <div class="look-copy">
+          <h3><span class="en">SSH where you have a box. ZIP when only humans can upload.</span><span class="zh">有 SSH 就自动推，只能人肉就打 ZIP</span></h3>
+          <p><span class="en"><code>auto</code> means SSH/SCP + nginx reload on your hosts. <code>manual</code> is skipped in batch and packed as ZIP for consoles that only accept uploads.</span><span class="zh"><code>auto</code> = SSH/SCP + nginx reload。<code>manual</code> 批量时跳过，打成 ZIP，给只能控制台上传的目标用。</span></p>
+        </div>
+        <div class="term">
+          <div class="bar"><i></i><i></i><i></i><span>deploy-all</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">./cert-manager.sh</span> deploy-all
+<span class="ok">✓</span> api.example.com → server_prod_01
+<span class="ok">✓</span> shop.example.com → 2 hosts · reloaded
+<span class="cm"># skipped manual: cdn.static.example.com</span></pre>
+        </div>
+      </div>
+
+      <div class="look-panel" id="panel-renew" data-panel="renew" role="tabpanel" aria-labelledby="tab-renew" hidden>
+        <div class="look-copy">
+          <h3><span class="en">Renew before calendars. Alert before outages.</span><span class="zh">到期前自动续期，出事前提醒你</span></h3>
+          <p><span class="en">Daily monitor, renew inside 30 days, digest to DingTalk / email / webhook — with quiet hours so nights stay quiet.</span><span class="zh">每天巡检，还有 30 天就续期；摘要发到钉钉、邮件或 Webhook。夜里可设静默时段，避免打扰。</span></p>
+        </div>
+        <div class="term">
+          <div class="bar"><i></i><i></i><i></i><span>cron · renew-all</span></div>
+<pre class="sc"><span class="cm"># 03:00 daily</span>
+<span class="p">$</span> <span class="o">./cert-manager.sh</span> renew-all
+<span class="ok">✓</span> renewed *.shop.example.com
+<span class="ok">✓</span> notified · DingTalk · 2 warnings</pre>
+        </div>
+      </div>
+
+      <div class="look-panel" id="panel-control" data-panel="control" role="tabpanel" aria-labelledby="tab-control" hidden>
+        <div class="look-copy">
+          <h3><span class="en">The official operations surface in Pro</span><span class="zh">Pro 提供完整可视化操作面</span></h3>
+          <p><span class="en">Dashboard, certificate actions, online configuration and logs in Web; REST handles create, renew and download for automation.</span><span class="zh">Web 集中提供仪表盘、证书操作、在线配置和日志；REST 负责申请、续期与下载自动化。</span></p>
+        </div>
+        <div class="term">
+          <div class="bar"><i></i><i></i><i></i><span>REST · sample</span></div>
+<pre class="sc"><span class="o">GET</span>  /api/dashboard
+<span class="o">POST</span> /api/certificates/{domain}/renew
+<span class="o">GET</span>  /api/certificates/manual/{domain}/download
+<span class="ok">✓</span> 200 · zip ready</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="btns center" style="margin-top:22px">
+      <a class="btn" href="guide/architecture.html"><span class="en">System architecture →</span><span class="zh">系统架构 →</span></a>
+      <a class="btn" href="guide/cdn.html"><span class="en">Deploy guide</span><span class="zh">证书部署说明</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. HARDEST · 闭环里最硬的一环（唯一差异化深挖）============ -->
+<section id="hardest" class="split noseq">
+  <div class="wrap wrap-wide">
+    <p class="section-kicker" style="text-align:left;margin-bottom:12px"><span class="en">Where platforms usually break</span><span class="zh">平台常断在这里</span></p>
+    <div class="split-grid">
+      <div class="split-text">
+        <div class="eyebrow"><span></span><span class="en">Hardest link · Deploy</span><span class="zh">最硬一环 · 部署</span></div>
+        <h2>
+          <span class="en">Issuing is half the job.<br>Getting it <span class="hl">live</span> is the rest.</span>
+          <span class="zh">申请只是半程。<br>难的是让它<span class="hl">上线</span>。</span>
+        </h2>
+        <p>
+          <span class="en">~90-day renew never stops. Domains scatter across calendars, hosts, CDN, and cloud panels. Some targets take SSH push; some only take a human ZIP upload. CertHub keeps both on one ledger — and verifies full chains so mini programs don’t fail on missing intermediates.</span>
+          <span class="zh">约 90 天一轮停不下来；域名散在日历、机器、CDN、云面板。有的目标走 SSH 推送，有的只能控制台传 ZIP。CertHub 两种路径同一本台账，并校验完整证书链，避免小程序缺中间证挂掉。</span>
+        </p>
+        <div class="dnspills">
+          <span class="ok">Aliyun</span>
+          <span class="ok">Tencent</span>
+          <span class="ok">Huawei</span>
+        </div>
+      </div>
+      <div class="split-visual pre">
+        <div class="tracks" style="margin:0 0 14px">
+          <div class="track auto">
+            <div class="lb">auto</div>
+            <h3><span class="en">Auto path</span><span class="zh">自动路径</span></h3>
+            <ul>
+              <li>SSH / nginx</li>
+              <li><span class="en">SCP + nginx reload</span><span class="zh">SCP + nginx reload</span></li>
+            </ul>
+          </div>
+          <div class="track manual">
+            <div class="lb">manual</div>
+            <h3><span class="en">Manual ZIP</span><span class="zh">手动 ZIP</span></h3>
+            <ul>
+              <li><span class="en">Skipped in batch</span><span class="zh">批量跳过</span></li>
+              <li><span class="en">ZIP download</span><span class="zh">ZIP 下载</span></li>
+              <li><span class="en">Human upload</span><span class="zh">人工上传</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chainboard">
+          <div class="chainrow ok"><span class="dot"></span><span class="name">mini.example.com</span><span class="meta"><span class="en">2 certs · OK</span><span class="zh">含中间证 · 正常</span></span></div>
+          <div class="chainrow ok"><span class="dot"></span><span class="name">api.example.com</span><span class="meta">fullchain.cer</span></div>
+          <div class="chainrow warn"><span class="dot"></span><span class="name">legacy.example.com</span><span class="meta"><span class="en">missing intermediate</span><span class="zh">缺中间证书</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. COMPARE · 用户最常见的选择题 ============ -->
+<section id="compare" class="compare noseq">
+  <div class="wrap wrap-wide">
+    <p class="section-kicker"><span class="en">Choose the right layer</span><span class="zh">先选对工具层级</span></p>
+    <h2><span class="en">Why not just use acme.sh?</span><span class="zh">为什么不只用 acme.sh？</span></h2>
+    <p class="section-lead"><span class="en">CertHub does not replace the ACME engine. It wraps the operational loop around it.</span><span class="zh">CertHub 不替代 ACME 引擎，而是把签发之后的运维闭环补齐。</span></p>
+    <div class="tablewrap compare-table pre">
+      <table>
+        <thead><tr><th><span class="en">Capability</span><span class="zh">能力</span></th><th>acme.sh</th><th><span class="en">Hosted service</span><span class="zh">托管服务</span></th><th>CertHub</th></tr></thead>
+        <tbody>
+          <tr><td><span class="en">ACME issue &amp; renew</span><span class="zh">ACME 申请与续期</span></td><td>✓</td><td><span class="en">Usually</span><span class="zh">通常支持</span></td><td>✓</td></tr>
+          <tr><td><span class="en">Keys stay in your environment</span><span class="zh">私钥留在自己的环境</span></td><td>✓</td><td><span class="en">Depends</span><span class="zh">视服务而定</span></td><td>✓</td></tr>
+          <tr><td><span class="en">SSH multi-host deployment</span><span class="zh">SSH 多机部署</span></td><td><span class="en">Build it</span><span class="zh">自行编排</span></td><td><span class="en">Depends</span><span class="zh">视服务而定</span></td><td>✓</td></tr>
+          <tr><td><span class="en">Console-only ZIP workflow</span><span class="zh">控制台手传 ZIP 流程</span></td><td><span class="en">Build it</span><span class="zh">自行处理</span></td><td><span class="en">Depends</span><span class="zh">视服务而定</span></td><td>✓</td></tr>
+          <tr><td><span class="en">Full-chain live verification</span><span class="zh">完整链线上校验</span></td><td><span class="en">Build it</span><span class="zh">自行处理</span></td><td><span class="en">Depends</span><span class="zh">视服务而定</span></td><td>✓</td></tr>
+          <tr><td><span class="en">Web + REST inventory</span><span class="zh">Web + REST 统一台账</span></td><td>—</td><td><span class="en">Usually</span><span class="zh">通常支持</span></td><td>Pro</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmpnote"><span class="en">Hosted products vary. “Depends” avoids claiming that every provider behaves the same.</span><span class="zh">不同托管产品能力不一，“视服务而定”不代表所有服务都缺少该能力。</span></p>
+  </div>
+</section>
+
+<!-- ============ 6. TRUST · 自托管 + 技术栈合并 ============ -->
+<section id="trust" class="promise noseq">
+  <div class="wrap wrap-wide">
+    <h2>
+      <span class="en">Your certs stay on your machines</span>
+      <span class="zh">证书留在你自己的机器上</span>
+    </h2>
+    <p class="section-lead">
+      <span class="en">Not a hosted SaaS peeking at private keys. Docker on your side. DNS secrets and SSH keys stay inside your perimeter.</span>
+      <span class="zh">不是托管 SaaS，私钥不出你的环境。Docker 自己跑；DNS 密钥与 SSH 密钥留在内网。</span>
+    </p>
+    <div class="chips center pre">
+      <i>acme.sh</i><i>Bash engine</i><i>CLI</i><i>Cron</i><i>yq</i><i>SSH / SCP</i><i>fullchain</i><i>Pro Web/API</i><i>Self-hosted</i>
+    </div>
+    <div class="ask" style="max-width:720px;margin:22px auto 0">
+      <span class="lb"><span class="en">honest limits</span><span class="zh">先说清楚做不到什么</span></span>
+      <span class="en">Set <code>CERTHUB_API_TOKEN</code>; put Web behind VPN if exposed. Community covers the complete basic workflow for five certificates. Direct CDN console API push remains a planned Pro capability until delivered.</span>
+      <span class="zh">设好 <code>CERTHUB_API_TOKEN</code>；对外请放 VPN 后面。Community 为 5 张证书提供完整基础闭环。CDN 控制台 API 直推在正式交付前仍标记为 Pro 规划能力。</span>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ============ 7. EXTENSIONS · 明确开源与开发中能力的边界 ============ -->
+<section id="pricing" class="split noseq">
+  <div class="wrap wrap-wide">
+    <p class="section-kicker"><span class="en">Open source first</span><span class="zh">开源版先跑通</span></p>
+    <h2 style="text-align:center;margin-bottom:8px">
+      <span class="en">Start free. Scale by certificate capacity.</span>
+      <span class="zh">5 张免费起步，按证书容量升级</span>
+    </h2>
+    <p class="section-lead">
+      <span class="en">Community covers the complete basic workflow for up to five active certificates. Pro adds capacity and production-scale delivery capabilities.</span>
+      <span class="zh">Community 为最多 5 张有效证书提供完整基础闭环；Pro 增加证书容量与生产级交付能力。</span>
+    </p>
+    <div class="edition-grid pre">
+      <article><span class="cvo-k">免费版 · ¥0</span><h3><span class="en">Five certificates · CLI workflow</span><span class="zh">5 张证书 · 命令行闭环</span></h3><p><span class="en">Issue, renew, verify and deploy through scripts and YAML configuration.</span><span class="zh">通过脚本和 YAML 完成申请、续期、校验与部署。</span></p></article>
+      <article><span class="cvo-k wait">入门版 · ¥99／年</span><h3><span class="en">Capacity plus the full console</span><span class="zh">证书容量 + 完整控制台</span></h3><p><span class="en">Every Pro tier includes dashboard, certificate operations, online configuration, logs and REST.</span><span class="zh">所有付费档位均包含仪表盘、证书操作、在线配置、日志与 REST。</span></p></article>
+    </div>
+    <div class="btns center" style="margin-top:8px">
+      <a class="btn btn-primary" href="guide/install.html">
+        <span class="en">Install the MIT edition →</span><span class="zh">安装 MIT 开源版 →</span>
+      </a>
+      <a class="btn" href="pricing.html">
+        <span class="en">Explore CertHub Pro</span><span class="zh">了解 CertHub Pro</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. FAQ ============ -->
+<section id="faq" class="faq noseq">
+  <div class="wrap wrap-narrow">
+    <h2>
+      <span class="en">Questions?</span>
+      <span class="zh">还有问题？</span>
+    </h2>
+
+    <div class="faq-list pre">
+      <details class="faq-item" open>
+        <summary><span class="en">How does CertHub work?</span><span class="zh">CertHub 怎么工作？</span></summary>
+        <p><span class="en">Configure domains, DNS, and targets in YAML. ACME DNS-01 issues; the deploy layer pushes over SSH when automatic, or packs ZIP when only a human upload works; renew + chain verify stay on the same ledger.</span><span class="zh">在 YAML 里配域名、DNS、部署目标。ACME DNS-01 申请；部署层能 SSH 的自动推，只能手传的打 ZIP；续期与证书链校验仍在同一本台账。</span></p>
+      </details>
+      <details class="faq-item">
+        <summary><span class="en">Who is it for?</span><span class="zh">适合谁？</span></summary>
+        <p><span class="en">Ops teams tired of ~90-day renew calendars across many domains — especially when some hosts take SSH and others only take a console upload.</span><span class="zh">被「约 90 天一轮 + 域名很多」折磨的运维——尤其有的机器能 SSH 推，有的只能控制台上传。</span></p>
+      </details>
+      <details class="faq-item">
+        <summary><span class="en">How is this different from acme.sh alone?</span><span class="zh">和单独用 acme.sh 有什么不同？</span></summary>
+        <p><span class="en">acme.sh mainly issues a file. CertHub Community adds the CLI delivery loop; Pro adds the official Web console and REST operations surface.</span><span class="zh">acme.sh 主要解决申请。CertHub Community 补齐命令行交付闭环；Pro 再增加官方 Web 控制台和 REST 操作面。</span></p>
+      </details>
+      <details class="faq-item">
+        <summary><span class="en">Is it free?</span><span class="zh">免费吗？</span></summary>
+        <p><span class="en">Community is free for up to five active certificates and includes the complete basic workflow. Existing copies already released under MIT keep their granted rights; future official distributions use the new Community/Pro boundary.</span><span class="zh">Community 免费管理最多 5 张有效证书，并包含完整基础闭环。已经按 MIT 发布的历史版本保留既有授权；未来官方发行版采用新的 Community／Pro 边界。</span></p>
+      </details>
+      <details class="faq-item">
+        <summary><span class="en">What is planned beyond the MIT edition?</span><span class="zh">开源版之外还计划做什么？</span></summary>
+        <p><span class="en">Pro adds 10, 50 and 200-certificate capacity tiers plus production-scale delivery capabilities. Direct provider integrations that are still being built remain clearly marked as planned.</span><span class="zh">Pro 提供 10、50、200 张证书容量，并增加生产级交付能力；仍在开发的厂商直连接口会继续明确标为规划能力。</span></p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. FINAL CTA ============ -->
+<section id="start" class="final-cta noseq">
+  <div class="wrap wrap-narrow">
+    <h2>
+      <span class="en">Get CertHub today</span>
+      <span class="zh">现在就上手 CertHub</span>
+    </h2>
+    <p class="section-lead">
+      <span class="en">Clone, compose, configure, issue. Four steps on your own machines.</span>
+      <span class="zh">克隆、编排、配置、签发。四步，都在你自己的机器上。</span>
+    </p>
+    <div class="term pre">
+      <div class="bar"><i></i><i></i><i></i><span>bootstrap</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">git clone</span> https://github.com/huiyonghkw/CertHub.git
+<span class="p">$</span> <span class="o">cd</span> CertHub &amp;&amp; <span class="o">docker compose up</span> -d
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh generate example.com
+<span class="ok">✓</span> then: verify-chains</pre>
+    </div>
+    <div class="btns center">
+      <a class="btn btn-primary" href="https://github.com/huiyonghkw/CertHub">
+        <span class="en">Open GitHub →</span><span class="zh">打开 GitHub →</span>
+      </a>
+      <a class="btn" href="guide/install.html">
+        <span class="en">Install guide</span><span class="zh">安装手册</span>
+      </a>
+      <a class="btn" href="guide/index.html">
+        <span class="en">Full docs</span><span class="zh">完整文档</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap wrap-wide">
+  <footer>
+    <span class="brand">CertHub™</span>
+    <span class="handle">SSL Certificate Automation</span>
+    <span class="handle">·</span>
+    <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span></span>
+    <span class="handle">·</span>
+    <span class="handle">MIT · © 2025–2026</span>
+  </footer>
+</div>
+
+</main>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

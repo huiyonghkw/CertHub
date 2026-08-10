@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly renew checklist · CertHub</title>
+<meta name="description" content="The minimal monthly SSL renew loop: status → generate/renew → deploy (auto + manual) → verify.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html" aria-current="page"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web &amp; API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Monthly checklist</span><span class="zh">每月换证</span></div>
+<h1><span class="en">Monthly renew checklist</span><span class="zh">每月换证 checklist</span></h1>
+<p class="lead"><span class="en">The smallest loop that still ships HTTPS in production — distilled from real multi-domain ops.</span><span class="zh">生产里真正在用的最小闭环——从多域名运维经验压出来的。</span></p>
+
+<div class="h2sub">status → renew → deploy → verify · ~90 days</div>
+
+<div class="ask"><span class="lb"><span class="en">timing</span><span class="zh">节奏</span></span>
+<span class="en">Let's Encrypt lasts ~90 days. Renew when ≤30 days remain (or on a monthly pass). Issuing is easy; <b>deploy to every target</b> is the part that fails silently.</span>
+<span class="zh">Let's Encrypt 约 90 天有效。剩余 ≤30 天就续（或按月巡检）。申请不难；<strong>每个目标都部署到位</strong>才是容易漏的环节。</span>
+</div>
+
+<h2><span class="en">Four steps (per certificate entry)</span><span class="zh">四步（按每条证书）</span></h2>
+
+<div class="buy" style="margin:0 0 28px">
+  <div class="rows">
+    <div class="row v"><div class="sq">01</div><div>
+      <div class="tt"><span class="en">Check status</span><span class="zh">看状态</span></div>
+      <div class="ds"><span class="en">Record expiry. Skip if still healthy.</span><span class="zh">记下过期时间。还健康就跳过本条。</span></div>
+    </div></div>
+    <div class="row v"><div class="sq">02</div><div>
+      <div class="tt"><span class="en">Generate / renew</span><span class="zh">申请 / 续期</span></div>
+      <div class="ds"><span class="en">Prefer a wildcard row when many subdomains share one cert. Confirm <code>fullchain.cer</code> in the success log.</span><span class="zh">子域名多时优先一条泛域名。成功日志里确认有 <code>fullchain.cer</code>。</span></div>
+    </div></div>
+    <div class="row v"><div class="sq">03</div><div>
+      <div class="tt"><span class="en">Deploy everywhere</span><span class="zh">部署到每一处</span></div>
+      <div class="ds"><span class="en"><b>Auto:</b> <code>deploy</code> each host / subdomain target. <b>Manual:</b> download ZIP / fullchain+key and upload the CDN console. Same cert, two delivery modes.</span><span class="zh"><b>自动：</b>对每个机 / 子域目标跑 <code>deploy</code>。<b>手动：</b>下 ZIP 或 fullchain+key，上 CDN 控制台。同一张证，两种交付。</span></div>
+    </div></div>
+    <div class="row v"><div class="sq">04</div><div>
+      <div class="tt"><span class="en">Verify live HTTPS</span><span class="zh">验线上 HTTPS</span></div>
+      <div class="ds"><span class="en"><code>curl -I</code> each hostname. Optionally check dates with openssl. Confirm CDN hosts too — origin renew ≠ CDN renew.</span><span class="zh">每个主机名 <code>curl -I</code>。可选 openssl 看日期。CDN 域名也要验——源站换了不等于 CDN 换了。</span></div>
+    </div></div>
+  </div>
+</div>
+
+<h2><span class="en">Command template (desensitized)</span><span class="zh">命令模板（已脱敏）</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>monthly pass</span></div>
+<pre class="sc"><span class="cm"># 01 status</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh status example.com
+
+<span class="cm"># 02 renew / generate (wildcard entry)</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh renew example.com
+<span class="cm"># or: generate '*.example.com' --force</span>
+
+<span class="cm"># 03a auto deploy — one cert, many targets</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy shop.example.com server_prod_01
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy api.example.com server_prod_02
+
+<span class="cm"># 03b manual — list + download ZIP for CDN / console upload</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh list-manual
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh pack-manual
+
+<span class="cm"># 04 verify</span>
+<span class="p">$</span> <span class="o">curl</span> -I https://shop.example.com
+<span class="p">$</span> <span class="o">curl</span> -I https://cdn.static.example.com</pre></div>
+
+<h2><span class="en">Batch checklist (print / tick)</span><span class="zh">批次打勾清单</span></h2>
+<ul>
+<li><span class="en">[ ] Every cert entry due within 30 days is renewed</span><span class="zh">[ ] 30 天内到期的证书条目都已续期</span></li>
+<li><span class="en">[ ] Every auto target got <code>deploy</code> (or <code>deploy-all</code>)</span><span class="zh">[ ] 每个 auto 目标都跑过 <code>deploy</code>（或 <code>deploy-all</code>）</span></li>
+<li><span class="en">[ ] Every manual / CDN host got a fresh pack uploaded</span><span class="zh">[ ] 每个 manual / CDN 主机都已上传新包</span></li>
+<li><span class="en">[ ] Live <code>curl -I</code> shows new dates on origin <b>and</b> CDN</span><span class="zh">[ ] 源站 <b>和</b> CDN 的 <code>curl -I</code> 都已是新日期</span></li>
+<li><span class="en">[ ] Full chain still has intermediates (see <a href="chain.html">cert chain</a>)</span><span class="zh">[ ] 完整证书链仍含中间证（见<a href="chain.html">证书链</a>）</span></li>
+</ul>
+
+<div class="ask"><span class="lb"><span class="en">same cert, two landings</span><span class="zh">同一张证，两处落地</span></span>
+<span class="en">A common production pattern: wildcard renew once → SSH deploy the shop host → hand-upload the static CDN hostname with the same fullchain + key. Details: <a href="cdn.html">Deploy</a>.</span>
+<span class="zh">生产里很常见：泛域名续一次 → SSH 部署商城机 → 同一套 fullchain + key 手传到静态 CDN。细节见<a href="cdn.html">证书部署</a>。</span>
+</div>
+
+<div class="pager"><a href="daily.html">← <span class="en">Daily ops</span><span class="zh">日常操作</span></a><a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

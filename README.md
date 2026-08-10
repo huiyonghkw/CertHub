@@ -1,79 +1,121 @@
-# CertHub Community
-
 <div align="center">
 
-![CertHub Logo](docs/images/certhub-logo.svg)
+<img src="docs/site/images/certhub-logo.svg" alt="CertHub" width="360">
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
-[![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](https://www.docker.com/)
-[![ACME](https://img.shields.io/badge/ACME-Let's%20Encrypt-orange.svg)](https://letsencrypt.org/)
+# 把证书从签发管到真正上线
 
-**自托管的 SSL/TLS 证书签发、续期、部署与完整链校验工具。**
+**CertHub 把申请、续期、部署和验收放进一本自托管台账。**<br>
+能 SSH 的自动推，只能控制台上传的自动打包；上线前再检查完整证书链。
+
+[产品主页](https://huiyonghkw.github.io/CertHub/) · [快速安装](https://huiyonghkw.github.io/CertHub/guide/install.html) · [完整文档](https://huiyonghkw.github.io/CertHub/guide/) · [版本与价格](https://huiyonghkw.github.io/CertHub/pricing.html)
+
+[![License](https://img.shields.io/badge/Community-MIT-6a45e0.svg)](LICENSE.md)
+[![Docker](https://img.shields.io/badge/Docker-ready-0aa98f.svg)](https://www.docker.com/)
+[![ACME](https://img.shields.io/badge/ACME-DNS--01-c17a08.svg)](https://letsencrypt.org/)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-171d2c.svg)](https://huiyonghkw.github.io/CertHub/)
 
 </div>
 
-CertHub Community 基于 Docker、acme.sh 和 DNS-01，把证书申请、自动续期、SSH 部署、手动 ZIP 打包以及完整证书链校验放进同一套 CLI + YAML 工作流。
+---
 
-## Community 能力
+## 签发只是半程，上线才是终点
 
-- 单域名与泛域名证书申请
-- 阿里云、腾讯云、华为云 DNS-01
-- ECC 与 RSA 证书
-- 定时续期与到期提醒
-- SSH/SCP 自动部署及 nginx reload
-- 为 CDN 等控制台上传场景生成手动 ZIP
-- 完整证书链校验
-- 邮件、钉钉、Webhook、Slack 通知
-- Docker 健康检查与只读 `GET /health`
+acme.sh 已经很好地解决了“把证书申请下来”。真正麻烦的是后半程：域名散在不同日历、服务器、CDN 和云控制台里；有的目标能走 SSH，有的只能人工上传；浏览器看着正常，微信小程序却可能因为缺少中间证书而失败。
 
-> Community 仓库不包含 Web 管理控制台和完整 REST API。它们属于 CertHub Pro，且在独立的私有交付包中维护。
+CertHub 将这些分散动作收进同一条工作流：
+
+```text
+申请证书 → 记录状态 → 自动续期 → SSH 部署 / 手动打包 → 完整链校验
+```
+
+[了解系统架构 →](https://huiyonghkw.github.io/CertHub/guide/architecture.html)
+
+## 四个真正影响生产的环节
+
+| 环节 | CertHub 做什么 | 结果 |
+| --- | --- | --- |
+| 完整链 | 优先使用 `fullchain.cer`，检查证书段数并探测线上主机 | 提前发现缺少中间证书的问题 |
+| 自动部署 | SSH/SCP 推送证书并执行 nginx reload | 能 SSH 的目标自动完成交付 |
+| 手动边界 | 为 CDN、云控制台等目标生成 ZIP/tar 包 | 不能自动推的场景也进入同一本台账 |
+| 持续续期 | Cron 定期检查、续期、通知并重新部署 | 不再依赖个人日历记住到期日 |
+
+[查看证书链指南](https://huiyonghkw.github.io/CertHub/guide/chain.html) · [查看 CDN 手动部署](https://huiyonghkw.github.io/CertHub/guide/cdn.html)
+
+## Pro 控制台预览
+
+<div align="center">
+  <a href="https://huiyonghkw.github.io/CertHub/pricing.html">
+    <img src="docs/site/images/console-dashboard.webp" alt="CertHub Pro 控制台：证书总览、优先处理队列和系统状态" width="900">
+  </a>
+  <br>
+  <sub>图中 Web 控制台与完整 REST API 属于 CertHub Pro，不包含在本 Community 仓库中。</sub>
+</div>
+
+## Community 与 Pro
+
+Community 提供完整的 CLI 基础闭环；当证书数量增加、需要可视化操作面和自动化接口时，再升级 Pro。
+
+| 能力 | Community | Pro |
+| --- | :---: | :---: |
+| 证书容量 | 5 张 | 10 / 50 / 200 张 |
+| 中国大陆年付价格 | ¥0 | ¥99 / ¥199 / ¥499 |
+| DNS-01 签发与续期 | ✓ | ✓ |
+| SSH/SCP 自动部署 | ✓ | ✓ |
+| 手动 ZIP 打包 | ✓ | ✓ |
+| 完整证书链校验 | ✓ | ✓ |
+| CLI + YAML | ✓ | ✓ |
+| Web 仪表盘与证书操作 | — | ✓ |
+| 在线配置与日志 | — | ✓ |
+| 完整 REST API | 仅 `/health` | ✓ |
+
+所有版本均为自托管。同一张证书部署到多台服务器，不重复计算证书槽位。
+
+[查看完整版本对比与价格 →](https://huiyonghkw.github.io/CertHub/pricing.html)
 
 ## 快速开始
 
-### 1. 准备配置
+### 1. 克隆并准备配置
 
 ```bash
+git clone https://github.com/huiyonghkw/CertHub.git
+cd CertHub
+
 cp config/domains.yml.example config/domains.yml
 cp config/dns-providers.yml.example config/dns-providers.yml
 cp config/servers.yml.example config/servers.yml
 cp config/notify.yml.example config/notify.yml
 ```
 
-真实 DNS 密钥、服务器信息和通知凭据已被 `.gitignore` 排除，请勿提交。
-
-### 2. 启动服务
+### 2. 启动 Community
 
 ```bash
 docker compose up -d acme-manager acme-health
-```
-
-### 3. 检查状态
-
-```bash
 docker compose ps
 curl http://localhost:8080/health
-docker exec acme-ssl-manager /scripts/cert-manager-simple.sh health-check
 ```
 
-健康接口只返回 Community 服务状态，不提供证书、配置、日志或写操作。
+### 3. 运行证书工作流
 
-## 配置结构
+```bash
+# 查看帮助
+docker exec acme-ssl-manager /scripts/cert-manager.sh help
 
-### DNS 提供商
+# 检查全部证书
+docker exec acme-ssl-manager /scripts/cert-manager.sh status-all
 
-在 `config/dns-providers.yml` 中配置 acme.sh 所需的环境变量。参考：
+# 续期即将到期的证书
+docker exec acme-ssl-manager /scripts/cert-manager.sh renew-all
 
-```yaml
-dns_providers:
-  aliyun:
-    provider_name: "阿里云 DNS"
-    dns_api: dns_ali
-    credentials:
-      Ali_Key: "your-key"
-      Ali_Secret: "your-secret"
+# 为手动上传目标打包
+docker exec acme-ssl-manager /scripts/cert-manager.sh pack-manual
+
+# 校验完整证书链
+docker exec acme-ssl-manager /scripts/cert-manager.sh verify-chains
 ```
 
-### 域名
+[打开完整安装教程 →](https://huiyonghkw.github.io/CertHub/guide/install.html)
+
+## 一份配置管理三条路径
 
 ```yaml
 domains:
@@ -89,99 +131,54 @@ domains:
         deploy_method: manual
 ```
 
-### 部署服务器
+- `auto`：SSH/SCP 推送到目标服务器并执行 reload。
+- `manual`：跳过自动推送，生成适合控制台上传的压缩包。
+- `verify-chains`：部署后探测线上域名，确认完整证书链。
 
-```yaml
-servers:
-  - server_id: server_prod_01
-    host: 192.0.2.10
-    port: 22
-    user: deploy
-    ssl_cert_dir: /etc/nginx/ssl
-    nginx_reload_cmd: sudo nginx -s reload
-```
+[DNS 与域名配置说明 →](https://huiyonghkw.github.io/CertHub/guide/config.html)
 
-生产环境建议只挂载专用部署密钥，不要把整个个人 SSH 目录交给容器。
+## 支持范围
 
-## 常用命令
+- 阿里云、腾讯云、华为云 DNS-01
+- 单域名和泛域名证书
+- ECC 与 RSA
+- 多服务器 SSH/SCP 部署
+- 邮件、钉钉、Webhook、Slack 通知
+- Prometheus 可选监控
+- Docker Compose 自托管
 
-```bash
-# 查看帮助
-docker exec acme-ssl-manager /scripts/cert-manager.sh help
-
-# 检查全部证书状态
-docker exec acme-ssl-manager /scripts/cert-manager.sh status-all
-
-# 续期即将到期的证书
-docker exec acme-ssl-manager /scripts/cert-manager.sh renew-all
-
-# 查看需要人工上传的域名
-docker exec acme-ssl-manager /scripts/cert-manager.sh list-manual
-
-# 为手动部署目标打包
-docker exec acme-ssl-manager /scripts/cert-manager.sh pack-manual
-
-# 校验证书链
-docker exec acme-ssl-manager /scripts/cert-manager.sh verify-chains
-```
-
-以当前脚本的 `help` 输出为最终命令依据。
-
-## 自动与手动部署
-
-- `deploy_method: auto`：通过 SSH/SCP 推送证书，并执行配置好的 reload 命令。
-- `deploy_method: manual`：批量自动部署时跳过，由 CLI 打成 ZIP，供 CDN 或云控制台人工上传。
-
-手动上传后仍应对线上域名执行完整证书链校验。浏览器显示正常，并不保证微信小程序等客户端能接受缺少中间证书的链。
-
-## 定时任务
-
-默认容器包含以下 Cron 任务：
-
-| 时间 | 任务 |
-| --- | --- |
-| 每日 02:00 | 证书状态监控 |
-| 每日 03:00 | 自动续期 |
-| 每日 11:00 | 状态报告 |
-| 每周日 04:00 | 旧备份清理 |
-
-## 项目结构
-
-```text
-CertHub/
-├── config/             # YAML 示例；真实配置不入库
-├── scripts/            # Community CLI 与证书工作流
-│   ├── cert-manager.sh
-│   ├── cert-manager-simple.sh
-│   ├── lib/
-│   └── utils/
-├── web/                # 仅 Community /health
-├── monitoring/         # 可选 Prometheus 配置
-├── tests/              # 冒烟测试
-├── Dockerfile
-└── docker-compose.yml
-```
+> DNS-01 解决域名验证，不等于云厂商证书上传 API。只能通过控制台上传证书的平台，应使用 `manual` 工作流。
 
 ## 安全边界
 
 - 不要提交 DNS API 密钥、SSH 私钥、证书私钥或真实运行配置。
-- 对生产服务器使用最小权限部署账号和专用 SSH 密钥。
-- `GET /health` 是公开版唯一 HTTP 接口，不返回证书库存或配置内容。
-- Community 不应出现 `/api/certificates`、`/api/config`、`/api/logs` 等管理路由。
-- 发现安全问题请参考 [SECURITY.md](SECURITY.md)。
+- 生产环境使用专用部署密钥和最小权限账号。
+- Community 的 `8080` 端口只提供只读 `GET /health`。
+- 本公开仓库不包含 Web 控制台、证书管理 API、商业授权文件或 Pro 私有实现。
 
-## Community 与 Pro
+[阅读安全说明 →](SECURITY.md)
 
-本仓库只维护 MIT 授权的 Community 能力。CertHub Pro 的 Web 控制台、完整 REST API、商业授权及后续生产级能力在独立私有代码库和交付包中维护。
+## 文档导航
 
-公开产品介绍可以说明版本差异，但不得把 Pro 源码、授权文件、私有发布包或支付素材提交到本仓库。
+- [产品主页](https://huiyonghkw.github.io/CertHub/)
+- [安装部署](https://huiyonghkw.github.io/CertHub/guide/install.html)
+- [配置说明](https://huiyonghkw.github.io/CertHub/guide/config.html)
+- [日常操作](https://huiyonghkw.github.io/CertHub/guide/daily.html)
+- [证书链排查](https://huiyonghkw.github.io/CertHub/guide/chain.html)
+- [CDN 手动部署](https://huiyonghkw.github.io/CertHub/guide/cdn.html)
+- [故障排除](https://huiyonghkw.github.io/CertHub/guide/troubleshoot.html)
+- [CertHub Pro](https://huiyonghkw.github.io/CertHub/pricing.html)
 
 ## 许可证
 
-Community 版本采用 [MIT License](LICENSE.md)。该许可证只适用于本公开仓库中实际发布的文件，不代表未来独立交付的 CertHub Pro 软件采用相同许可证。
+CertHub Community 使用 [MIT License](LICENSE.md)。该许可证只适用于本公开仓库实际发布的文件，不代表独立交付的 CertHub Pro 软件使用相同许可证。
 
-## 致谢
+---
 
-- [acme.sh](https://github.com/acmesh-official/acme.sh)
-- [Let's Encrypt](https://letsencrypt.org/)
-- [Docker](https://www.docker.com/)
+<div align="center">
+
+**先用 Community 跑通五张证书，再决定是否需要完整控制台。**
+
+[免费开始](https://huiyonghkw.github.io/CertHub/guide/install.html) · [查看 Pro](https://huiyonghkw.github.io/CertHub/pricing.html) · [提交问题](https://github.com/huiyonghkw/CertHub/issues)
+
+</div>

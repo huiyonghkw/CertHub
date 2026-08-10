@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificate chain · CertHub</title>
+<meta name="description" content="fullchain preference, verify-chains, WeChat Mini Program checks.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html" aria-current="page"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Cert chain</span><span class="zh">证书链</span></div>
+<h1><span class="en">Certificate chain</span><span class="zh">证书链</span></h1>
+<p class="lead"><span class="en">fullchain preference, verify-chains, WeChat Mini Program checks.</span><span class="zh">完整证书链、verify-chains、小程序场景怎么查。</span></p>
+
+<div class="h2sub">fullchain.cer · verify-chains · WeChat</div>
+<p><span class="en">I have hit Mini Program failures where the browser looked fine but WeChat returned <code>ERR_CERT_AUTHORITY_INVALID</code> — usually the server only had the site certificate and was missing the intermediate.</span><span class="zh">我排过小程序挂掉：浏览器看着正常，微信报 <code>ERR_CERT_AUTHORITY_INVALID</code>。常见原因是服务器上只有站点证书，缺了中间证书。</span></p>
+
+<h2><span class="en">What CertHub does</span><span class="zh">CertHub 怎么处理</span></h2>
+<ul>
+<li><span class="en">Prefer <code>fullchain.cer</code> over a single-host <code>.cer</code> when deploying.</span><span class="zh">部署时优先用 <code>fullchain.cer</code>，而不是只有站点证书的 <code>.cer</code>。</span></li>
+<li><span class="en">If the chosen file has fewer than 2 PEM blocks, try switching to fullchain automatically.</span><span class="zh">若当前文件里 PEM 证书段少于 2 段，会尝试自动切到 fullchain。</span></li>
+<li><span class="en"><code>verify-chains</code> reports every domain’s chain count and path.</span><span class="zh"><code>verify-chains</code> 会报告每个域名的证书段数和文件路径。</span></li>
+</ul>
+
+<h2><span class="en">Run verification</span><span class="zh">跑校验</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>verify-chains</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh verify-chains
+
+<span class="ok">✓</span> example.com: fullchain (2 certs) - fullchain.cer
+<span class="cm"># warning example: only 1 cert — use fullchain.cer</span></pre></div>
+
+<h2><span class="en">Manual openssl check on a live host</span><span class="zh">线上主机用 openssl 复核</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>openssl</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">echo</span> | openssl s_client -servername api.example.com \
+  -connect api.example.com:443 -showcerts 2>/dev/null \
+  | <span class="o">grep</span> -c 'BEGIN CERTIFICATE'
+<span class="cm"># expect >= 2</span></pre></div>
+<div class="ask"><span class="lb"><span class="en">nginx tip</span><span class="zh">nginx 提示</span></span>
+<span class="en">Point <code>ssl_certificate</code> at the full chain file; keep the private key separate. After deploy, hard-refresh or clear CDN TLS cache if a CDN sits in front.</span>
+<span class="zh"><code>ssl_certificate</code> 指向完整证书链文件，私钥单独配置。若前面还有 CDN，换证后注意清 CDN 侧 TLS 缓存。</span>
+</div>
+
+<div class="pager"><a href="checklist.html">← <span class="en">Monthly checklist</span><span class="zh">每月换证</span></a><a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture · CertHub</title>
+<meta name="description" content="CertHub architecture: ACME issue, DNS-01, deploy engine (auto SSH / manual ZIP), Web API, cron.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+<style>
+.doc .arch{margin:20px 0 28px;background:transparent;border:0;border-radius:0;overflow:visible;box-shadow:none;padding:0}
+.doc .arch img{width:100%;height:auto;display:block;border-radius:16px;box-shadow:0 12px 40px rgba(20,30,50,.07);border:1px solid rgba(15,20,30,.06);background:#f7f8fb}
+.doc .arch .cap{padding:12px 4px 0;font-size:13.5px;color:var(--text2);border-top:0}
+.doc .arch .cap b{color:var(--text)}
+/* 生命周期 / 部署模式：吃满文档栏宽，不再压矮 */
+.doc .arch.secondary{opacity:1;margin-left:-8px;margin-right:-8px}
+.doc .arch.secondary img{box-shadow:0 12px 40px rgba(20,30,50,.07);width:100%;min-height:0}
+@media(min-width:980px){
+  .doc .arch.secondary{margin-left:-24px;margin-right:-24px}
+}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html" aria-current="page"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web &amp; API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Architecture</span><span class="zh">系统架构</span></div>
+<h1><span class="en">Architecture</span><span class="zh">系统架构</span></h1>
+<p class="lead"><span class="en">Where the pain is, and how the loop closes.</span><span class="zh">痛点在哪，闭环怎么收口。</span></p>
+
+<div class="h2sub">issue ≠ deploy · ~90 days · multi-target</div>
+
+<div class="arch">
+  <img src="../images/architecture.svg" alt="CertHub 系统架构">
+  <div class="cap"><b>图 1 · 系统架构</b> — 控制面 → 引擎 → ACME/DNS-01 → <b>部署</b> → 存储 / 告警</div>
+</div>
+
+<h2><span class="en">Product pain (why CertHub exists)</span><span class="zh">产品痛点（为什么做 CertHub）</span></h2>
+<ul>
+<li><span class="en"><b>Certificates rotate about every 90 days.</b> Miss one renew and HTTPS dies.</span><span class="zh"><b>证书大概每 90 天一轮。</b>漏续一次，HTTPS 就挂。</span></li>
+<li><span class="en"><b>Many domains</b> mean calendars, SSH boxes, CDN consoles, and cloud panels all diverge.</span><span class="zh"><b>域名一多</b>，日历、机器、CDN 控制台、云平台面板各管各的，极易漏。</span></li>
+<li><span class="en"><b>Issuing is not the hard part.</b> After ACME succeeds you still must <b>deploy</b> — some targets allow automation, some only accept a human upload.</span><span class="zh"><b>申请不是最难的。</b>ACME 成功后还要<strong>部署</strong>——有的目标能自动推，有的只能人肉上传。</span></li>
+</ul>
+<div class="ask"><span class="lb"><span class="en">CertHub Pro</span><span class="zh">商业版</span></span>
+<span class="en">Community includes SSH deployment + manual ZIP for five active certificates. <b>CertHub Pro</b> adds 10, 50 or 200 certificate slots plus production delivery features — <a href="../pricing.html">Pro</a>.</span>
+<span class="zh">Community 为 5 张有效证书提供 SSH 部署与手动 ZIP。<strong>CertHub Pro</strong> 增加 10、50 或 200 个证书槽位及生产交付能力——见<a href="../pricing.html">商业版</a>。</span>
+</div>
+
+<h2><span class="en">Building blocks</span><span class="zh">模块说明</span></h2>
+<ul>
+<li><span class="en"><b>acme-manager</b> — <code>cert-manager.sh</code>: generate, renew, monitor, verify-chains, backup, deploy.</span><span class="zh"><b>acme-manager</b> — <code>cert-manager.sh</code>：申请、续期、监控、校验证书链、备份、部署。</span></li>
+<li><span class="en"><b>DNS-01</b> — Aliyun / Tencent / Huawei for wildcards.</span><span class="zh"><b>DNS-01</b> — 阿里 / 腾讯 / 华为，支撑泛域名。</span></li>
+<li><span class="en"><b>Deploy</b> — auto SSH/SCP + nginx reload; manual ZIP for consoles that only accept uploads.</span><span class="zh"><b>部署</b> — 自动 SSH/SCP + nginx reload；只能控制台上传的走手动 ZIP。</span></li>
+<li><span class="en"><b>acme-web · Pro</b> — official dashboard + full REST on <code>:8080</code>; Community keeps only <code>/health</code>.</span><span class="zh"><b>acme-web · Pro</b> — <code>:8080</code> 官方控制台与完整 REST；Community 仅保留 <code>/health</code>。</span></li>
+<li><span class="en"><b>Truth on disk</b> — <code>/config</code> YAML, <code>/data/certs|logs|backups</code>.</span><span class="zh"><b>磁盘真源</b> — <code>/config</code> YAML，<code>/data/certs|logs|backups</code>。</span></li>
+</ul>
+
+<h2><span class="en">90-day lifecycle</span><span class="zh">约 90 天一轮生命周期</span></h2>
+<div class="arch secondary">
+  <img src="../images/lifecycle.svg" alt="证书生命周期">
+  <div class="cap"><b>图 2 · 生命周期</b> — 申请 → 校验链 → <b>部署</b> → 运行 → 续期 → 再部署 → 监控</div>
+</div>
+
+<h2><span class="en">Deploy modes</span><span class="zh">两种部署方式</span></h2>
+<div class="arch secondary">
+  <img src="../images/deploy-modes.svg" alt="部署模式">
+  <div class="cap"><b>图 3 · 部署模式</b> — 自动（绿）与手动 ZIP（琥珀）；SSH 自动 + 手动 ZIP</div>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+  <th><span class="en">Mode</span><span class="zh">方式</span></th>
+  <th><code>deploy_method</code></th>
+  <th><span class="en">Typical targets</span><span class="zh">典型目标</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="en">Auto</span><span class="zh">自动</span></td>
+  <td><code>auto</code></td>
+  <td><span class="en">SSH servers · nginx paths · SCP reload</span><span class="zh">SSH 服务器 · nginx 路径 · SCP reload</span></td>
+</tr>
+<tr>
+  <td><span class="en">Manual</span><span class="zh">手动</span></td>
+  <td><code>manual</code></td>
+  <td><span class="en">CDN / consoles that only take a human upload — ZIP via CLI; Pro also offers Web/API</span><span class="zh">只能人肉上传的 CDN/控制台 — Community 用 CLI 打 ZIP；Pro 另提供 Web/API</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h2><span class="en">Compose services</span><span class="zh">Compose 服务</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>docker compose</span></div>
+<pre class="sc">acme-manager   <span class="cm"># 证书引擎 + cron</span>
+acme-web       <span class="cm"># Pro · :8080 控制台 + 完整 REST</span>
+acme-monitor   <span class="cm"># 可选 Prometheus :9090</span></pre></div>
+
+<div class="ask"><span class="lb"><span class="en">next docs</span><span class="zh">接下来读</span></span>
+<span class="en"><a href="install.html">Install</a> · <a href="config.html">Configure</a> · <a href="cdn.html">Deploy</a> ·
+</span>
+<span class="zh"><a href="install.html">安装</a> · <a href="config.html">配置</a> · <a href="cdn.html">证书部署</a> ·
+</span>
+</div>
+
+<div class="pager"><a href="index.html">← <span class="en">Intro</span><span class="zh">简介</span></a><a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span> →</a></div>
+</article>
+</div></div>
+
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span></span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

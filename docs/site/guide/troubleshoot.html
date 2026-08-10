@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshoot · CertHub</title>
+<meta name="description" content="ARM64, DNS env, nginx mounts, WeChat errors, logs.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html" aria-current="page"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Troubleshoot</span><span class="zh">排障</span></div>
+<h1><span class="en">Troubleshoot</span><span class="zh">排障</span></h1>
+<p class="lead"><span class="en">ARM64, DNS env, nginx mounts, WeChat errors, logs.</span><span class="zh">ARM64、DNS 变量、nginx 挂载、小程序报错、日志。</span></p>
+
+<div class="h2sub">ARM64 · DNS env · nginx mount · WeChat</div>
+
+<h2><span class="en">ARM64 / Apple Silicon: Illegal instruction</span><span class="zh">ARM64 / Apple Silicon：Illegal instruction</span></h2>
+<p><span class="en">ECC keygen can fail under x86 images on ARM hosts. v1.2.0 prefers RSA for compatibility. Force with:</span><span class="zh">在 ARM 宿主机跑 x86 镜像时，ECC 生成密钥可能失败。v1.2.0 会倾向 RSA 以提高兼容性。也可强制：</span></p>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>RSA</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> -e ACME_KEY_TYPE=rsa acme-ssl-manager \
+  /scripts/cert-manager.sh generate example.com</pre></div>
+
+<h2><span class="en">DNS API: missing DP_Id / Ali_Key</span><span class="zh">DNS API：提示缺少 DP_Id / Ali_Key</span></h2>
+<ul>
+<li><span class="en">Confirm <code>dns_provider</code> on the domain matches an ID in <code>dns-providers.yml</code>.</span><span class="zh">确认域名上的 <code>dns_provider</code> 和 <code>dns-providers.yml</code> 里的 ID 一致。</span></li>
+<li><span class="en">Confirm <code>env_vars</code> names are exactly what acme.sh expects (<code>Ali_Key</code>, <code>DP_Id</code>, …).</span><span class="zh">确认 <code>env_vars</code> 名称正是 acme.sh 要求的（如 <code>Ali_Key</code>、<code>DP_Id</code>）。</span></li>
+<li><span class="en">Remount/restart after editing YAML: config is volume-mounted.</span><span class="zh">改完 YAML 后如未生效，重启容器；配置是卷挂载的。</span></li>
+</ul>
+
+<h2><span class="en">Deployed but browser still shows old cert</span><span class="zh">部署了但浏览器还是旧证书</span></h2>
+<ul>
+<li><span class="en">Check nginx is reading the <b>mounted host path</b> you wrote to.</span><span class="zh">确认 nginx 读的是你写入的<strong>宿主机挂载路径</strong>。</span></li>
+<li><span class="en"><code>docker inspect</code> the nginx container mounts.</span><span class="zh">用 <code>docker inspect</code> 看 nginx 容器挂载。</span></li>
+<li><span class="en">Confirm reload command actually ran.</span><span class="zh">确认 reload 命令确实执行成功。</span></li>
+</ul>
+
+<h2><span class="en">WeChat Mini Program certificate error</span><span class="zh">微信小程序证书错误</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>chain</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh verify-chains
+<span class="p">$</span> <span class="o">echo</span> | openssl s_client -servername 你的域名 -connect 你的域名:443 -showcerts 2>/dev/null \
+  | <span class="o">grep</span> -c 'BEGIN CERTIFICATE'</pre></div>
+<p><span class="en">If count is 1, redeploy with fullchain and reload nginx.</span><span class="zh">如果只有 1 段，用完整证书链重新部署并 reload nginx。</span></p>
+
+<h2><span class="en">Origin renewed, CDN still old</span><span class="zh">源站换了，CDN 还是旧证</span></h2>
+<ul>
+<li><span class="en">Same wildcard renew does <b>not</b> push to CDN consoles. Mark those hosts <code>manual</code>, download the pack, upload PEM, then <code>curl -I</code> the CDN hostname.</span><span class="zh">泛域名续期<strong>不会</strong>自动推到 CDN 控制台。这些主机标 <code>manual</code>，下包装 PEM 上传，再用 <code>curl -I</code> 验 CDN 主机名。</span></li>
+<li><span class="en">See <a href="cdn.html">Deploy · Pattern B</a> and the <a href="checklist.html">monthly checklist</a>.</span><span class="zh">见<a href="cdn.html">证书部署 · 模式 B</a>与<a href="checklist.html">每月换证</a>。</span></li>
+</ul>
+
+<h2><span class="en">Logs</span><span class="zh">看日志</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>logs</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">tail</span> -f data/logs/cert-manager.log
+<span class="p">$</span> <span class="o">tail</span> -f data/logs/error.log
+<span class="p">$</span> <span class="o">tail</span> -f data/logs/cron.log
+<span class="p">$</span> <span class="o">docker logs</span> -f acme-ssl-manager</pre></div>
+
+<div class="pager"><a href="web-api.html">← <span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a><span></span></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

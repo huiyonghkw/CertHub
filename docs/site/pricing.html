@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertHub Pro — 商业版</title>
+<meta name="description" content="CertHub Community 免费管理 5 张证书；CertHub Pro 按 10、50、200 个证书槽位提供年度授权，面向自托管证书交付场景。">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="index.html"><img src="images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="guide/index.html"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="pricing.html" aria-current="page"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="guide/index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="guide/install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="guide/config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="guide/daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="guide/chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="guide/cdn.html"><span class="en">CDN manual</span><span class="zh">CDN 手动</span></a>
+  <a href="guide/web-api.html"><span class="en">Web &amp; API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="guide/troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="pricing.html" aria-current="page"><span class="en">Pro</span><span class="zh">商业版</span></a>
+    <a href="#compare"><span class="en">Compare editions</span><span class="zh">版本对比</span></a>
+    <a href="#license"><span class="en">License rules</span><span class="zh">授权规则</span></a>
+    <a href="#buy"><span class="en">Buy Pro</span><span class="zh">购买咨询</span></a>
+    <a href="index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+
+<article class="doc">
+<div class="crumb"><a href="index.html"><span class="en">Home</span><span class="zh">首页</span></a> · CertHub Pro</div>
+<p class="section-kicker" style="text-align:left;margin-bottom:12px">COMMUNITY + PRO</p>
+<h1><span class="en">Pay for the certificate capacity you operate.</span><span class="zh">按实际管理的证书数量付费。</span></h1>
+<p class="lead"><span class="en">Start with five certificates for free. Upgrade by certificate slots as the inventory grows — the same self-hosted workflow, without per-server billing.</span><span class="zh">免费管理 5 张证书；随着证书台账增长，再按证书槽位升级。同一张证书部署到多台服务器，不重复计费。</span></p>
+
+<div class="plan-grid">
+  <article class="plan"><span class="plan-name">免费版</span><strong>¥0</strong><b><span class="en">5 certificates</span><span class="zh">5 张证书</span></b><p><span class="en">CLI + YAML · no Web console.</span><span class="zh">CLI + YAML，不含 Web 控制台。</span></p></article>
+  <article class="plan plan-focus"><span class="plan-name">入门版</span><strong>¥99</strong><b><span class="en">10 certificates / year</span><span class="zh">10 张证书／年</span></b><p><span class="en">Includes the full Web console and REST.</span><span class="zh">包含完整 Web 控制台与 REST。</span></p></article>
+  <article class="plan"><span class="plan-name">团队版</span><strong>¥199</strong><b><span class="en">50 certificates / year</span><span class="zh">50 张证书／年</span></b><p><span class="en">Includes the full Web console and REST.</span><span class="zh">包含完整 Web 控制台与 REST。</span></p></article>
+  <article class="plan"><span class="plan-name">商业版</span><strong>¥499</strong><b><span class="en">200 certificates / year</span><span class="zh">200 张证书／年</span></b><p><span class="en">Includes the full Web console and REST.</span><span class="zh">包含完整 Web 控制台与 REST。</span></p></article>
+</div>
+<p class="plan-note"><span class="en">More than 200 certificates: Enterprise quote · deployment, migration and SLA available separately.</span><span class="zh">超过 200 张：企业定制报价；私有部署、迁移与 SLA 可单独采购。</span></p>
+
+<div class="ask"><span class="lb"><span class="en">existing MIT releases</span><span class="zh">历史 MIT 版本</span></span><span class="en">Rights already granted under MIT do not change. The five-certificate allowance describes the future official Community distribution and support boundary; it does not revoke existing copies.</span><span class="zh">已经按照 MIT 发布的版本，其既有授权不发生变化。5 张额度描述的是未来官方 Community 发行版与支持边界，不追溯收回已有代码副本的权利。</span></div>
+
+<h2 id="compare"><span class="en">Free for evaluation. Pro for production scale.</span><span class="zh">免费版完成体验，Pro 承担生产规模。</span></h2>
+<div class="tablewrap"><table>
+  <thead><tr><th><span class="en">Capability</span><span class="zh">能力</span></th><th>Community</th><th>Pro</th></tr></thead>
+  <tbody>
+    <tr><td><span class="en">Active certificate capacity</span><span class="zh">有效证书额度</span></td><td class="y">5</td><td class="v">10 / 50 / 200+</td></tr>
+    <tr><td><span class="en">ACME issuance and scheduled renewal</span><span class="zh">ACME 申请与定时续期</span></td><td class="y">✓ MIT</td><td class="v">✓</td></tr>
+    <tr><td><span class="en">SSH/SCP deployment + manual ZIP</span><span class="zh">SSH/SCP 部署与手动 ZIP</span></td><td class="y">✓</td><td class="v">✓</td></tr>
+    <tr><td><span class="en">Full-chain verification</span><span class="zh">完整证书链校验</span></td><td class="y">✓</td><td class="v">✓</td></tr>
+    <tr><td><span class="en">Web dashboard and certificate operations</span><span class="zh">Web 仪表盘与证书操作</span></td><td class="n">—</td><td class="v">✓</td></tr>
+    <tr><td><span class="en">Online configuration and log console</span><span class="zh">在线配置与日志控制台</span></td><td class="n">—</td><td class="v">✓</td></tr>
+    <tr><td><span class="en">Full REST API</span><span class="zh">完整 REST API</span></td><td class="n"><code>/health</code></td><td class="v">✓</td></tr>
+    <tr><td><span class="en">Direct cloud/CDN console deployment</span><span class="zh">云平台／CDN 控制台直推</span></td><td class="n">—</td><td class="v"><span class="en">in validation</span><span class="zh">验证中</span></td></tr>
+    <tr><td><span class="en">Dry-run, result tracking and deployment policy</span><span class="zh">预演、结果追踪与部署策略</span></td><td class="n">—</td><td class="v"><span class="en">planned</span><span class="zh">规划中</span></td></tr>
+    <tr><td><span class="en">Team roles, approvals and audit log</span><span class="zh">团队权限、审批与审计日志</span></td><td class="n">—</td><td class="v"><span class="en">planned</span><span class="zh">规划中</span></td></tr>
+    <tr><td><span class="en">Commercial updates and delivery support</span><span class="zh">商业更新与交付支持</span></td><td class="n"><span class="en">community</span><span class="zh">社区支持</span></td><td class="v">✓</td></tr>
+  </tbody>
+</table></div>
+
+<h2><span class="en">What Pro will solve first</span><span class="zh">Pro 第一阶段解决什么</span></h2>
+<div class="road">
+  <div class="roaditem"><span class="st next">01</span><div><div class="tt"><span class="en">Direct provider deployment</span><span class="zh">厂商接口直接部署</span></div><p class="ds"><span class="en">Start with real Aliyun, Tencent Cloud, Huawei Cloud and CDN deployment scenarios collected from early users.</span><span class="zh">从早期用户的真实场景出发，逐步接入阿里云、腾讯云、华为云及 CDN 部署接口。</span></p></div></div>
+  <div class="roaditem"><span class="st next">02</span><div><div class="tt"><span class="en">Traceable delivery</span><span class="zh">可追踪的证书交付</span></div><p class="ds"><span class="en">Dry-run, explicit result records, failure context and rollback guidance instead of a silent API call.</span><span class="zh">提供预演、明确的部署结果、失败上下文和回滚指引，而不是只调用一次 API。</span></p></div></div>
+  <div class="roaditem"><span class="st later">03</span><div><div class="tt"><span class="en">Team governance</span><span class="zh">团队治理</span></div><p class="ds"><span class="en">Roles, approvals and audit records for organizations where certificate changes cannot depend on one operator.</span><span class="zh">为不能依赖单个运维人员的组织补齐权限、审批和审计记录。</span></p></div></div>
+</div>
+
+<h2 id="license"><span class="en">What counts as one certificate?</span><span class="zh">什么算一张证书？</span></h2>
+<div class="road">
+  <div class="roaditem"><span class="st live">01</span><div><div class="tt"><span class="en">One certificate record, one slot</span><span class="zh">一条证书主记录，占一个槽位</span></div><p class="ds"><span class="en">A wildcard certificate such as <code>*.example.com</code> counts as one certificate.</span><span class="zh">例如 <code>*.example.com</code> 泛域名证书，也只计算一张。</span></p></div></div>
+  <div class="roaditem"><span class="st live">02</span><div><div class="tt"><span class="en">Deployment targets do not multiply the count</span><span class="zh">部署目标数量不重复计费</span></div><p class="ds"><span class="en">The same certificate deployed to multiple servers still occupies one slot.</span><span class="zh">同一张证书部署到多台服务器，仍然只占一个槽位。</span></p></div></div>
+  <div class="roaditem"><span class="st live">03</span><div><div class="tt"><span class="en">Inactive records release capacity</span><span class="zh">停用证书可释放额度</span></div><p class="ds"><span class="en">Disabled or deleted certificate records release their slots for reuse.</span><span class="zh">停用或删除证书记录后，槽位可以重新使用。</span></p></div></div>
+</div>
+
+<div class="buy" id="buy">
+  <p class="section-kicker" style="text-align:left;margin-bottom:12px"><span class="en">BUY CERTHUB PRO</span><span class="zh">购买 CERTHUB PRO</span></p>
+  <h2><span class="en">Confirm the capacity before payment.</span><span class="zh">付款前先确认额度与交付范围。</span></h2>
+  <p><span class="en">Send the required certificate count, deployment environment and provider list. We will confirm the applicable tier, current deliverable features and upgrade terms before payment.</span><span class="zh">请提供证书数量、部署环境和云厂商清单。付款前会确认适用版本、当前可交付功能与后续升级规则。</span></p>
+  <div class="purchase-contact"><div><b><span class="en">Purchase consultation</span><span class="zh">购买咨询</span></b><p><span class="en">Open a consultation request and include “CertHub Pro + certificate count + deployment environment”.</span><span class="zh">发起咨询时请注明“CertHub Pro + 证书数量 + 部署环境”。</span></p></div></div>
+  <div class="btns" style="margin-top:20px"><a class="btn btn-primary" href="https://github.com/huiyonghkw/CertHub/issues/new?title=CertHub%20Pro%20purchase%20consultation"><span class="en">Start consultation</span><span class="zh">发起购买咨询</span></a><a class="btn" href="guide/install.html"><span class="en">Try Community first</span><span class="zh">先试用 Community</span></a></div>
+</div>
+
+<div class="pager"><a href="index.html">← <span class="en">Product</span><span class="zh">产品</span></a><a href="guide/index.html"><span class="en">Docs</span><span class="zh">文档</span> →</a></div>
+</article>
+</div></div>
+
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="assets/site.js"></script>
+</body>
+</html>

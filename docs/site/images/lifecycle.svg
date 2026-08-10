@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="960" height="640">
+  <defs>
+    <style>
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 22px; font-weight: 700; fill: #0f1320; }
+      .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; fill: #535b6b; }
+      .step-num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; font-weight: 600; fill: #535b6b; }
+      .step-title { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 700; fill: #0f1320; }
+      .step-en { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #535b6b; }
+      .step-desc { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #535b6b; }
+      .badge { font-family: system-ui, -apple-system, sans-serif; font-size: 9px; font-weight: 600; }
+      .note { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #0f1320; }
+      .note-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; fill: #535b6b; }
+    </style>
+    <marker id="flowArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#06a88c"/>
+    </marker>
+    <marker id="loopArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#6a45e0"/>
+    </marker>
+    <filter id="shadow" x="-6%" y="-6%" width="112%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#141e32" flood-opacity="0.06"/>
+    </filter>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="rgba(15,20,30,0.05)"/>
+    </pattern>
+  </defs>
+
+  <rect width="960" height="640" fill="#f4f6f9"/>
+  <rect width="960" height="640" fill="url(#dots)"/>
+
+  <text x="40" y="44" class="title">证书生命周期</text>
+  <text x="40" y="64" class="subtitle">Certificate Lifecycle · Let's Encrypt 约 90 天一轮</text>
+
+  <line x1="80" y1="200" x2="880" y2="200" stroke="rgba(15,20,30,0.08)" stroke-width="2"/>
+
+  <g transform="translate(60, 200)">
+    <circle cx="40" cy="0" r="28" fill="#fff" stroke="#06a88c" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num">01</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11">申请</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="rgba(15,20,30,0.12)" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title">Issue</text>
+    <text x="40" y="80" text-anchor="middle" class="step-en">DNS-01</text>
+    <text x="40" y="98" text-anchor="middle" class="step-desc">ACME 下单</text>
+    <text x="40" y="110" text-anchor="middle" class="step-desc">TXT 校验</text>
+  </g>
+  <line x1="168" y1="200" x2="188" y2="200" stroke="#06a88c" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+  <g transform="translate(188, 200)">
+    <circle cx="40" cy="0" r="28" fill="#fff" stroke="#06a88c" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num">02</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11">校验</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="rgba(15,20,30,0.12)" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title">Verify</text>
+    <text x="40" y="80" text-anchor="middle" class="step-en">verify-chains</text>
+    <text x="40" y="98" text-anchor="middle" class="step-desc">链完整性</text>
+    <text x="40" y="110" text-anchor="middle" class="step-desc">中间证书</text>
+  </g>
+  <line x1="296" y1="200" x2="316" y2="200" stroke="#06a88c" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+  <g transform="translate(316, 200)">
+    <circle cx="40" cy="0" r="28" fill="#6a45e0" stroke="#6a45e0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num" fill="#fff">03</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11" fill="#fff">部署</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="#6a45e0" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title" fill="#6a45e0">Deploy</text>
+    <rect x="8" y="72" width="64" height="16" rx="3" fill="rgba(106,69,224,0.12)"/>
+    <text x="40" y="83" text-anchor="middle" class="badge" fill="#6a45e0">部署层</text>
+    <text x="40" y="104" text-anchor="middle" class="step-desc">SSH 或 ZIP</text>
+  </g>
+  <line x1="424" y1="200" x2="444" y2="200" stroke="#06a88c" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+  <g transform="translate(444, 200)">
+    <circle cx="40" cy="0" r="28" fill="#fff" stroke="#06a88c" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num">04</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11">运行</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="rgba(15,20,30,0.12)" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title">Serving</text>
+    <text x="40" y="82" text-anchor="middle" class="step-desc">HTTPS 在线</text>
+    <text x="40" y="98" text-anchor="middle" class="step-desc">~90 天有效</text>
+    <text x="40" y="110" text-anchor="middle" class="step-desc">nginx / CDN</text>
+  </g>
+  <line x1="552" y1="200" x2="572" y2="200" stroke="#06a88c" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+  <g transform="translate(572, 200)">
+    <circle cx="40" cy="0" r="28" fill="#fff" stroke="#06a88c" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num">05</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11">续期</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="rgba(15,20,30,0.12)" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title">Renew</text>
+    <text x="40" y="82" text-anchor="middle" class="step-en">到期前 ~30 天</text>
+    <text x="40" y="98" text-anchor="middle" class="step-desc">Cron 触发</text>
+    <text x="40" y="110" text-anchor="middle" class="step-desc">自动重签</text>
+  </g>
+  <line x1="680" y1="200" x2="700" y2="200" stroke="#6a45e0" stroke-width="2" marker-end="url(#loopArrow)"/>
+
+  <g transform="translate(700, 200)">
+    <circle cx="40" cy="0" r="28" fill="#fff" stroke="#6a45e0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num">06</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11">再部署</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="#6a45e0" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title" fill="#6a45e0">Redeploy</text>
+    <text x="40" y="82" text-anchor="middle" class="step-desc">新 cert 上线</text>
+    <text x="40" y="98" text-anchor="middle" class="step-desc">reload / 上传</text>
+    <text x="40" y="110" text-anchor="middle" class="step-desc">域名越多越痛</text>
+  </g>
+  <line x1="808" y1="200" x2="828" y2="200" stroke="#06a88c" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+  <g transform="translate(828, 200)">
+    <circle cx="40" cy="0" r="28" fill="#fff" stroke="#06a88c" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="-4" text-anchor="middle" class="step-num">07</text>
+    <text x="40" y="10" text-anchor="middle" class="step-title" font-size="11">监控</text>
+    <rect x="-10" y="44" width="100" height="72" rx="8" fill="#fff" stroke="rgba(15,20,30,0.12)" filter="url(#shadow)"/>
+    <text x="40" y="64" text-anchor="middle" class="step-title">Monitor</text>
+    <text x="40" y="82" text-anchor="middle" class="step-desc">到期告警</text>
+    <text x="40" y="98" text-anchor="middle" class="step-desc">钉钉 / 邮件</text>
+    <text x="40" y="110" text-anchor="middle" class="step-desc">Webhook</text>
+  </g>
+
+  <path d="M 868,240 C 868,320 720,360 612,360 C 480,360 400,320 400,260" fill="none" stroke="#6a45e0" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.55"/>
+  <text x="612" y="382" text-anchor="middle" class="step-en" fill="#6a45e0">90 天周期循环 · 续期 → 再部署</text>
+
+  <g transform="translate(120, 420)">
+    <rect x="0" y="0" width="720" height="36" rx="8" fill="#fff" stroke="rgba(15,20,30,0.12)" filter="url(#shadow)"/>
+    <rect x="8" y="8" width="704" height="20" rx="4" fill="#eef1f5"/>
+    <rect x="8" y="8" width="470" height="20" rx="4" fill="rgba(6,168,140,0.25)"/>
+    <rect x="478" y="8" width="234" height="20" rx="4" fill="rgba(191,125,26,0.25)"/>
+    <text x="240" y="22" text-anchor="middle" class="step-desc" fill="#06a88c">有效服务期 ~60 天</text>
+    <text x="595" y="22" text-anchor="middle" class="step-desc" fill="#bf7d1a">续期窗口 ~30 天</text>
+    <text x="360" y="-8" text-anchor="middle" class="step-en">证书有效期 ≈ 90 天</text>
+  </g>
+
+  <g transform="translate(120, 490)">
+    <rect x="0" y="0" width="720" height="88" rx="12" fill="#fff" stroke="rgba(106,69,224,0.35)" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="6" height="88" rx="3" fill="#6a45e0"/>
+    <text x="28" y="32" class="note">证书约 90 天一轮；域名一多，部署最痛</text>
+    <text x="28" y="54" class="note-sub">签发与续期可自动化 · 真正耗时的是把新证书送到每一台机器 / 每一个 CDN 入口</text>
+    <text x="28" y="72" class="note-sub">CertHub 价值：台账统一 + 自动部署（SSH）或 ZIP 诚实降级（手动）</text>
+  </g>
+
+  <g transform="translate(40, 600)">
+    <circle cx="8" cy="0" r="6" fill="#06a88c"/>
+    <text x="20" y="4" class="step-en">开源闭环 · 签发 / 续期 / 监控</text>
+    <circle cx="280" cy="0" r="6" fill="#6a45e0"/>
+    <text x="292" y="4" class="step-en">部署 / 再部署</text>
+    <circle cx="520" cy="0" r="6" fill="#bf7d1a"/>
+    <text x="532" y="4" class="step-en">手动边界 · CDN / 控制台上传</text>
+  </g>
+</svg>

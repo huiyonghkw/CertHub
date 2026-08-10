@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily ops · CertHub</title>
+<meta name="description" content="generate, deploy, renew, monitor, and the full command list.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html" aria-current="page"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Daily ops</span><span class="zh">日常操作</span></div>
+<h1><span class="en">Daily ops</span><span class="zh">日常操作</span></h1>
+<p class="lead"><span class="en">generate, deploy, renew, monitor, and the full command list.</span><span class="zh">申请、部署、续期、监控，以及命令速查。</span></p>
+
+<div class="h2sub">cert-manager.sh · generate · deploy · renew · monitor</div>
+<p><span class="en">All commands run inside the manager container. Replace domains and server IDs with yours.</span><span class="zh">以下命令都在管理容器里执行。域名和服务器 ID 换成你自己的。</span></p>
+
+<h2><span class="en">Issue certificates</span><span class="zh">申请证书</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>generate</span></div>
+<pre class="sc"><span class="cm"># one domain (as configured)</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh generate example.com
+
+<span class="cm"># all domains in domains.yml</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh generate-all
+
+<span class="cm"># force / dry-run</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh generate example.com -f
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh generate-all -d</pre></div>
+<p><span class="en">Certs land under <code>/data/certs/</code> (host: <code>./data/certs/</code>). ECC dirs often end with <code>_ecc</code>.</span><span class="zh">证书落在容器 <code>/data/certs/</code>（宿主机 <code>./data/certs/</code>）。ECC 目录名常带 <code>_ecc</code> 后缀。</span></p>
+
+<h2><span class="en">Deploy</span><span class="zh">部署</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>deploy</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh \
+  deploy example.com server_prod_01
+
+<span class="cm"># optional custom remote directory name</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh \
+  deploy example.com server_prod_01 custom-dir
+
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy-all</pre></div>
+<ul>
+<li><span class="en"><code>deploy-all</code> skips <code>deploy_method: manual</code>.</span><span class="zh"><code>deploy-all</code> 会跳过 <code>deploy_method: manual</code> 的域名。</span></li>
+<li><span class="en">Prefers <code>fullchain.cer</code>, backs up old files, then runs <code>nginx_reload_cmd</code>.</span><span class="zh">优先用 <code>fullchain.cer</code>，先备份旧文件，再执行 <code>nginx_reload_cmd</code>。</span></li>
+</ul>
+
+<h2><span class="en">Renew</span><span class="zh">续期</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>renew</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh renew example.com
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh renew-all</pre></div>
+<p><span class="en">Cron renews certificates inside the 30-day window daily around 03:00 (container TZ Asia/Shanghai).</span><span class="zh">定时任务大约每天 03:00（容器时区 Asia/Shanghai）续期 30 天内到期的证书。</span></p>
+
+<h2><span class="en">Status, monitor, report</span><span class="zh">状态、监控、日报</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>status</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh status example.com
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh status-all
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh list
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh monitor
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh report
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh test example.com</pre></div>
+
+<h2><span class="en">Command cheat sheet</span><span class="zh">命令速查</span></h2>
+<div class="tablewrap"><table>
+<thead><tr><th><span class="en">Command</span><span class="zh">命令</span></th><th><span class="en">What it does</span><span class="zh">作用</span></th></tr></thead>
+<tbody>
+<tr><td><code>generate / generate-all</code></td><td><span class="en">Issue certs via ACME DNS-01</span><span class="zh">经 ACME DNS-01 申请</span></td></tr>
+<tr><td><code>deploy / deploy-all</code></td><td><span class="en">SSH deploy; skip manual</span><span class="zh">SSH 部署；跳过 manual</span></td></tr>
+<tr><td><code>renew / renew-all</code></td><td><span class="en">Renew; renew-all also packs manual ZIPs</span><span class="zh">续期；renew-all 后会打 manual ZIP</span></td></tr>
+<tr><td><code>pack-manual</code></td><td><span class="en">Pack ZIP/tar for manual targets</span><span class="zh">为 manual 目标打 ZIP/tar</span></td></tr>
+<tr><td><code>verify-chains</code></td><td><span class="en">Check full chain files</span><span class="zh">检查完整证书链文件</span></td></tr>
+<tr><td><code>list-manual</code></td><td><span class="en">Manual / CDN inventory</span><span class="zh">列出需手动处理的域名</span></td></tr>
+<tr><td><code>revoke</code></td><td><span class="en">Revoke a domain cert</span><span class="zh">吊销域名证书</span></td></tr>
+<tr><td><code>cleanup</code></td><td><span class="en">Prune old logs/backups</span><span class="zh">清理旧日志和备份</span></td></tr>
+<tr><td><code>-h / -v / -f / -d</code></td><td><span class="en">help / verbose / force / dry-run</span><span class="zh">帮助 / 详细 / 强制 / 预演</span></td></tr>
+</tbody></table></div>
+
+<div class="ask"><span class="lb"><span class="en">monthly pass</span><span class="zh">每月巡检</span></span>
+<span class="en">Printable four-step loop (status → renew → deploy auto+manual → verify): <a href="checklist.html">Monthly renew checklist</a>. Dual-track deploy: <a href="cdn.html">Deploy</a>.</span>
+<span class="zh">可打勾四步（状态 → 续期 → 自动+手动部署 → 验收）：<a href="checklist.html">每月换证 checklist</a>。双轨部署见<a href="cdn.html">证书部署</a>。</span>
+</div>
+
+<div class="pager"><a href="config.html">← <span class="en">Configure</span><span class="zh">配置说明</span></a><a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

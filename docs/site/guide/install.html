@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install · CertHub</title>
+<meta name="description" content="Clone, prepare config, mount SSH keys, compose up.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html" aria-current="page"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web & API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Install</span><span class="zh">安装部署</span></div>
+<h1><span class="en">Install</span><span class="zh">安装部署</span></h1>
+<p class="lead"><span class="en">Clone, prepare config, mount SSH keys, compose up.</span><span class="zh">克隆、准备配置、挂载 SSH、启动 Compose。</span></p>
+
+<div class="h2sub">docker compose · acme-ssl-manager · :8080</div>
+<h2><span class="en">1. Clone</span><span class="zh">1. 克隆仓库</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>clone</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">git clone</span> https://github.com/huiyonghkw/CertHub.git
+<span class="p">$</span> <span class="o">cd</span> CertHub</pre></div>
+
+<h2><span class="en">2. Prepare config from examples</span><span class="zh">2. 从示例复制配置</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>config</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">cp</span> config/domains.yml.example config/domains.yml
+<span class="p">$</span> <span class="o">cp</span> config/servers.yml.example config/servers.yml
+<span class="p">$</span> <span class="o">cp</span> config/notify.yml.example config/notify.yml
+<span class="cm"># dns-providers.yml: create from your own keys (do not commit)</span>
+<span class="p">$</span> <span class="o">mkdir</span> -p data/certs data/logs data/backups</pre></div>
+<p><span class="en">Edit the YAML next — see <a href="config.html">Configure</a>. You can start the stack first and fill keys before the first <code>generate</code>.</span><span class="zh">YAML 怎么填见<a href="config.html">配置说明</a>。也可以先把容器拉起来，真正跑 <code>generate</code> 之前再填密钥。</span></p>
+
+<h2><span class="en">3. Mount SSH keys</span><span class="zh">3. 挂载 SSH 密钥</span></h2>
+<p><span class="en"><code>docker-compose.yml</code> mounts <code>~/.ssh</code> read-only into the manager container. Make sure the key that can log into your nginx hosts is in that directory, and the public key is already on the servers.</span><span class="zh"><code>docker-compose.yml</code> 会把本机 <code>~/.ssh</code> 只读挂进管理容器。请确认能登录目标 nginx 机器的私钥在这个目录里，且对应公钥已装到服务器上。</span></p>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>ssh check</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">ssh</span> -i ~/.ssh/id_rsa root@你的服务器IP <span class="o">hostname</span>
+<span class="ok">✓</span> <span class="en">should print without password prompt</span><span class="zh">应免密打出主机名</span></pre></div>
+
+<h2><span class="en">4. Start services</span><span class="zh">4. 启动服务</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>compose</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker compose up</span> -d
+<span class="p">$</span> <span class="o">docker compose ps</span>
+<span class="ok">✓</span> acme-ssl-manager
+<span class="ok">✓</span> acme-health   <span class="cm"># http://localhost:8080/health</span></pre></div>
+<ul>
+<li><span class="en"><b>acme-manager</b> — certificate engine + cron.</span><span class="zh"><b>acme-manager</b>：证书引擎和定时任务。</span></li>
+<li><span class="en"><b>acme-health</b> — Community read-only health endpoint on port <code>8080</code>.</span><span class="zh"><b>acme-health</b>：Community 只读健康检查，端口 <code>8080</code>。</span></li>
+<li><span class="en">Optional Prometheus is in the same compose file.</span><span class="zh">同一份 compose 里还可选开 Prometheus。</span></li>
+</ul>
+<div class="ask"><span class="lb"><span class="en">edition boundary</span><span class="zh">版本边界</span></span><span class="en">The public Community repository contains CLI + YAML and <code>/health</code> only. The Web console and full REST API are delivered separately with Pro.</span><span class="zh">公开 Community 仓库只包含 CLI + YAML 和 <code>/health</code>；Web 控制台与完整 REST API 随 Pro 独立交付。</span></div>
+
+<h2><span class="en">5. Health check</span><span class="zh">5. 健康检查</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>health</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager-simple.sh health-check
+<span class="p">$</span> <span class="o">curl</span> -s http://127.0.0.1:8080/health</pre></div>
+<div class="ask"><span class="lb"><span class="en">security</span><span class="zh">安全提醒</span></span>
+<span class="en">Community exposes only read-only <code>/health</code>. Do not add certificate inventory, configuration or log data to this endpoint.</span>
+<span class="zh">Community 只暴露只读 <code>/health</code>，不要向该接口加入证书库存、配置或日志数据。</span>
+</div>
+
+<div class="pager"><a href="index.html">← <span class="en">Intro</span><span class="zh">简介</span></a><a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

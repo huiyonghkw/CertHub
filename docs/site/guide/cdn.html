@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lang-zh">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var K='hkw-lang',q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+if(q!=='zh'&&q!=='en')q=null;var s=q;if(!s)try{s=localStorage.getItem(K)}catch(e){}
+if(s!=='zh'&&s!=='en')s=/^zh/i.test(navigator.language||'')?'zh':'en';
+if(s==='zh')document.documentElement.classList.add('lang-zh');
+else document.documentElement.classList.remove('lang-zh');
+document.documentElement.lang=s==='zh'?'zh-CN':'en';
+if(q)try{localStorage.setItem(K,q)}catch(e){}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificate deploy · CertHub</title>
+<meta name="description" content="One cert, many targets: SSH auto, CDN manual ZIP. SSH auto and manual ZIP.">
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css?v=20260810-8">
+<style>
+.doc .arch{margin:22px 0;background:transparent;border:0;overflow:visible}
+.doc .arch img{width:100%;height:auto;display:block;border-radius:16px;box-shadow:0 12px 40px rgba(20,30,50,.07);border:1px solid rgba(15,20,30,.06)}
+.doc .arch .cap{padding:12px 4px 0;font-size:13.5px;color:var(--text2)}
+.doc .arch .cap b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="masthead">
+  <div class="wrap wrap-wide">
+    <a class="mh-brand" href="../index.html"><img src="../images/favicon.svg" alt=""><b>CertHub</b></a>
+    <nav class="mh-nav" aria-label="Primary">
+      <a href="../index.html"><span class="en">Product</span><span class="zh">产品</span></a>
+      <a href="index.html" aria-current="page"><span class="en">Docs</span><span class="zh">文档</span></a>
+      <a href="../pricing.html"><span class="en">Pro</span><span class="zh">商业版</span></a>
+      <a href="https://github.com/huiyonghkw/CertHub">GitHub</a>
+    </nav>
+    <div class="toggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="false">EN</button>
+      <button id="btn-zh" aria-pressed="true">中文</button>
+    </div>
+  </div>
+</div>
+<div class="wrap"><div class="docgrid">
+<aside class="side" aria-label="Docs">
+  <div class="st"><span class="en">Guide</span><span class="zh">操作手册</span></div>
+  <a href="index.html"><span class="en">Intro</span><span class="zh">简介</span></a>
+  <a href="architecture.html"><span class="en">Architecture</span><span class="zh">系统架构</span></a>
+  <a href="install.html"><span class="en">Install</span><span class="zh">安装部署</span></a>
+  <a href="config.html"><span class="en">Configure</span><span class="zh">配置说明</span></a>
+  <a href="daily.html"><span class="en">Daily ops</span><span class="zh">日常操作</span></a>
+  <a href="checklist.html"><span class="en">Monthly checklist</span><span class="zh">每月换证</span></a>
+  <a href="chain.html"><span class="en">Cert chain</span><span class="zh">证书链</span></a>
+  <a href="cdn.html" aria-current="page"><span class="en">Deploy</span><span class="zh">证书部署</span></a>
+  <a href="web-api.html"><span class="en">Web &amp; API · Pro</span><span class="zh">Web 与 API · Pro</span></a>
+  <a href="troubleshoot.html"><span class="en">Troubleshoot</span><span class="zh">排障</span></a>
+  <div class="grp">
+    <div class="st"><span class="en">Also</span><span class="zh">另见</span></div>
+    <a href="../index.html"><span class="en">Product</span><span class="zh">产品首页</span></a>
+    <a href="../pricing.html"><span class="en">CertHub Pro</span><span class="zh">商业版</span></a>
+    <a href="https://github.com/huiyonghkw/CertHub"><span class="en">Source (MIT)</span><span class="zh">源码 (MIT)</span></a>
+  </div>
+</aside>
+<article class="doc">
+<div class="crumb"><a href="../index.html"><span class="en">Home</span><span class="zh">首页</span></a> · <a href="index.html"><span class="en">Docs</span><span class="zh">文档</span></a> · <span class="en">Deploy</span><span class="zh">证书部署</span></div>
+<h1><span class="en">Certificate deploy</span><span class="zh">证书部署</span></h1>
+<p class="lead"><span class="en">One certificate entry → many landing targets. SSH where you have a box; ZIP when only a human can upload.</span><span class="zh">一条证书 → 多个落地目标。有 SSH 就自动推；只能人肉就打 ZIP。</span></p>
+
+<div class="h2sub">one cert · multi-host · auto + manual</div>
+
+<div class="ask"><span class="lb"><span class="en">MIT vs paid</span><span class="zh">开源 vs 付费</span></span>
+<span class="en"><b>Community:</b> SSH/SCP + nginx reload, and <code>manual</code> ZIP for console upload. <b>CertHub Pro:</b> adds certificate capacity and production delivery features; direct cloud/CDN deployment remains in validation — see <a href="../pricing.html">Pro</a>.</span>
+<span class="zh"><strong>Community：</strong>SSH/SCP + nginx reload，以及 <code>manual</code> ZIP 手传。<strong>CertHub Pro：</strong>按证书槽位增加容量与生产交付能力；云平台／CDN 直推仍在验证中——见<a href="../pricing.html">商业版</a>。</span>
+</div>
+
+<div class="arch">
+  <img src="../images/deploy-modes.svg" alt="Deploy modes">
+  <div class="cap"><b><span class="en">Deploy modes</span><span class="zh">部署模式</span></b> — <span class="en">one inventory, two delivery paths</span><span class="zh">一本台账，两条交付路径</span></div>
+</div>
+
+<h2><span class="en">Pattern A · One cert, many SSH hosts</span><span class="zh">模式 A · 一证多机</span></h2>
+<p><span class="en">Issue a wildcard once. Then <code>deploy</code> each subdomain / host that should receive files — different <code>server_id</code> or paths are normal.</span><span class="zh">泛域名签一次。再对每个需要落盘的子域 / 主机分别 <code>deploy</code>——不同 <code>server_id</code> 或路径很常见。</span></p>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>multi-host</span></div>
+<pre class="sc"><span class="cm"># after renew example.com (covers *.example.com)</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy shop.example.com server_prod_01
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy api.example.com server_prod_01
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy www.example.com server_edge_02
+
+<span class="cm"># or batch auto targets</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh deploy-all</pre></div>
+<ul>
+<li><span class="en">Match <code>deploy_dir</code> / filenames to real nginx ssl paths.</span><span class="zh"><code>deploy_dir</code> / 文件名要对齐真实 nginx ssl 路径。</span></li>
+<li><span class="en">Prefer deploying <code>fullchain.cer</code>, not a lone leaf cert.</span><span class="zh">优先部署 <code>fullchain.cer</code>，不要只上站点证书。</span></li>
+<li><span class="en">Good deployers: backup → atomic replace → <code>nginx -t</code> → reload → verify.</span><span class="zh">靠谱的部署：备份 → 原子替换 → <code>nginx -t</code> → reload → 验证。</span></li>
+</ul>
+
+<h2><span class="en">Pattern B · Same renew, CDN still manual</span><span class="zh">模式 B · 同一次续期，CDN 仍手传</span></h2>
+<p><span class="en">Shop host can be auto; static CDN hostname on the <b>same</b> wildcard often still needs a console upload. Mark those rows <code>manual</code>.</span><span class="zh">商城机可以自动；挂在<strong>同一</strong>泛域名下的静态 CDN 主机，往往仍要控制台上传。这些行标成 <code>manual</code>。</span></p>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>manual</span></div>
+<pre class="sc">- domain: cdn.static.example.com
+  deploy_method: manual</pre></div>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>list + zip</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh list-manual
+
+<span class="cm"># Community CLI creates the upload package</span>
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh pack-manual
+
+<span class="cm"># Upload fullchain + key in the CDN / cloud console, then:</span>
+<span class="p">$</span> <span class="o">curl</span> -I https://cdn.static.example.com</pre></div>
+<ul>
+<li><span class="en"><code>deploy-all</code> skips <code>manual</code> on purpose — it will not pretend a console is SSH.</span><span class="zh"><code>deploy-all</code> 会故意跳过 <code>manual</code>——不会假装控制台能 SSH。</span></li>
+<li><span class="en">Renewal still runs for manual domains; you still upload after renew.</span><span class="zh">手动域名照样续期；续完后仍要人工上传。</span></li>
+<li><span class="en">Typical consoles: object-storage CDN panels that only accept PEM upload.</span><span class="zh">典型场景：对象存储 / CDN 面板只接受 PEM 上传。</span></li>
+</ul>
+
+<h2><span class="en">Pattern C · What is <em>not</em> auto today</span><span class="zh">模式 C · 今天什么不算自动</span></h2>
+<p><span class="en">CertHub does <b>not</b> call Aliyun / Tencent console upload APIs. DNS-01 for those providers is supported; certificate <em>landing</em> on a cloud CDN/panel that only accepts human upload stays on <code>deploy_method: manual</code> + ZIP. Prefer Pattern A (SSH) whenever the host allows it.</span><span class="zh">CertHub <b>不会</b>调用阿里云 / 腾讯云控制台上传 API。这些厂商的 DNS-01 申请支持；证书落到「只能人肉上传」的 CDN/面板时，仍用 <code>deploy_method: manual</code> + ZIP。机器允许 SSH 时优先走模式 A。</span></p>
+
+<h2><span class="en">Verify after deploy</span><span class="zh">部署后验收</span></h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>verify</span></div>
+<pre class="sc"><span class="p">$</span> <span class="o">curl</span> -I https://shop.example.com
+<span class="p">$</span> <span class="o">openssl</span> s_client -connect shop.example.com:443 -servername shop.example.com &lt;/dev/null 2&gt;/dev/null \
+  | <span class="o">openssl</span> x509 -noout -dates
+
+<span class="p">$</span> <span class="o">docker exec</span> acme-ssl-manager /scripts/cert-manager.sh verify-chains</pre></div>
+
+<div class="ask"><span class="lb"><span class="en">monthly loop</span><span class="zh">每月闭环</span></span>
+<span class="en">Printable four-step pass: <a href="checklist.html">Monthly renew checklist</a>.</span>
+<span class="zh">可打勾的四步：<a href="checklist.html">每月换证 checklist</a>。</span>
+</div>
+
+<div class="pager"><a href="checklist.html">← <span class="en">Monthly checklist</span><span class="zh">每月换证</span></a><a href="web-api.html"><span class="en">Web &amp; API · Pro</span><span class="zh">Web 与 API · Pro</span> →</a></div>
+</article>
+</div></div>
+<div class="wrap"><footer>
+  <span class="brand">CertHub™</span>
+  <span class="handle"><span class="en">by 会勇禾口王 · @huiyonghkw</span><span class="zh">作者 会勇禾口王 · @huiyonghkw</span> · MIT</span>
+</footer></div>
+<script src="../assets/site.js"></script>
+</body>
+</html>
